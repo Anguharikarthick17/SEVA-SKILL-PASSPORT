@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { DataService } from '@/lib/data-service';
 import {
   Award,
   ShieldCheck,
@@ -20,8 +21,8 @@ import { DEMO_PASSPORT } from '@/data';
 export default function CredentialsPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [downloadToast, setDownloadToast] = useState<string | null>(null);
-
-  const credentials = [
+  const [user, setUser] = useState<any>(null);
+  const [credentials, setCredentials] = useState<any[]>([
     {
       id: 'cred-001',
       title: 'Full Stack Development',
@@ -55,7 +56,31 @@ export default function CredentialsPage() {
       competencyScore: 87,
       verificationUrl: '/verify?id=cred-003',
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    DataService.getCurrentUser().then(async (u) => {
+      setUser(u);
+      if (u) {
+        const creds = await DataService.getUserCredentials(u.id);
+        if (creds && creds.length > 0) {
+          setCredentials(
+            creds.map((c) => ({
+              id: c.id,
+              title: c.title,
+              subtitle: c.credentialType === 'course_completion' ? 'Course Completion' : c.credentialType === 'platform_assessment' ? 'Platform Assessment' : 'Skill Passport',
+              type: c.credentialType === 'course_completion' ? 'Platform Course Completion' : c.credentialType === 'platform_assessment' ? 'Competency Assessment' : 'Demonstration Skill Passport',
+              issuedDate: new Date(c.issuedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+              validUntil: c.credentialType === 'course_completion' ? 'Lifetime' : 'October 1, 2026',
+              status: 'Active',
+              competencyScore: c.metadata?.score || c.metadata?.overallCompetency || 87,
+              verificationUrl: `/verify?id=${c.verificationId}`,
+            }))
+          );
+        }
+      }
+    });
+  }, []);
 
   const handleCopyLink = (id: string) => {
     const fullUrl = `${window.location.origin}/verify?id=${id}`;

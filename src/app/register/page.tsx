@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Eye, EyeOff, ArrowRight, Shield } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Shield, AlertCircle } from 'lucide-react';
 import { INDIA_STATES, EDUCATION_OPTIONS } from '@/data';
+import { DataService } from '@/lib/data-service';
 
 interface FormData {
   fullName: string;
@@ -19,6 +20,7 @@ interface FormData {
 export default function RegisterPage() {
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [form, setForm] = useState<FormData>({
     fullName: '',
     email: '',
@@ -33,8 +35,11 @@ export default function RegisterPage() {
 
   const field = (key: keyof FormData) => ({
     value: form[key],
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
-      setForm({ ...form, [key]: e.target.value }),
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      setForm({ ...form, [key]: e.target.value });
+      if (errors[key]) setErrors({ ...errors, [key]: undefined });
+      if (serverError) setServerError(null);
+    },
   });
 
   const validate = (): boolean => {
@@ -51,13 +56,36 @@ export default function RegisterPage() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
     setLoading(true);
-    setTimeout(() => {
-      window.location.href = '/dashboard';
-    }, 1200);
+    setServerError(null);
+
+    try {
+      const { user, error } = await DataService.registerUser({
+        fullName: form.fullName.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        mobile: form.mobile.trim(),
+        education: form.education,
+        state: form.state,
+        district: form.district.trim(),
+      });
+
+      if (error) {
+        setServerError(error);
+        setLoading(false);
+        return;
+      }
+
+      if (user) {
+        window.location.href = '/dashboard';
+      }
+    } catch (err: any) {
+      setServerError(err.message || 'Registration failed. Please check network and try again.');
+      setLoading(false);
+    }
   };
 
   const inputClass = (key: keyof FormData) =>
@@ -78,6 +106,13 @@ export default function RegisterPage() {
         </div>
 
         <div className="gov-card shadow-gov-lg">
+          {serverError && (
+            <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2.5 text-red-700 text-xs">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{serverError}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             {/* Personal */}
             <div>
@@ -180,7 +215,7 @@ export default function RegisterPage() {
             <Link href="/login" className="font-semibold text-navy-700 hover:text-navy-900">Sign in</Link>
           </p>
         </div>
-        <p className="text-center text-xs text-slate-400 mt-6">Prototype · No real data stored · Authentication is mocked</p>
+        <p className="text-center text-xs text-slate-400 mt-6">Secure authentication backed by Supabase & database identity</p>
       </div>
     </div>
   );

@@ -2,20 +2,34 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Eye, EyeOff, ArrowRight, Shield } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Shield, AlertCircle } from 'lucide-react';
+import { DataService } from '@/lib/data-service';
 
 export default function LoginPage() {
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [form, setForm] = useState({ email: '', password: '' });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Mock auth — redirect to dashboard after 1s
-    setTimeout(() => {
-      window.location.href = '/dashboard';
-    }, 1000);
+    setServerError(null);
+
+    try {
+      const { user, error } = await DataService.loginUser(form.email.trim(), form.password);
+      if (error) {
+        setServerError(error);
+        setLoading(false);
+        return;
+      }
+      if (user) {
+        window.location.href = '/dashboard';
+      }
+    } catch (err: any) {
+      setServerError(err.message || 'Login failed. Please verify credentials.');
+      setLoading(false);
+    }
   };
 
   return (
@@ -31,6 +45,13 @@ export default function LoginPage() {
         </div>
 
         <div className="gov-card shadow-gov-lg">
+          {serverError && (
+            <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-xl flex items-center gap-2.5 text-red-700 text-xs">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{serverError}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <div>
               <label htmlFor="login-email" className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -42,7 +63,10 @@ export default function LoginPage() {
                 required
                 autoComplete="email"
                 value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                onChange={(e) => {
+                  setForm({ ...form, email: e.target.value });
+                  if (serverError) setServerError(null);
+                }}
                 className="w-full px-4 py-3 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent transition-all"
                 placeholder="you@example.com"
               />
@@ -64,7 +88,10 @@ export default function LoginPage() {
                   required
                   autoComplete="current-password"
                   value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  onChange={(e) => {
+                    setForm({ ...form, password: e.target.value });
+                    if (serverError) setServerError(null);
+                  }}
                   className="w-full px-4 py-3 pr-10 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent transition-all"
                   placeholder="••••••••"
                 />
@@ -108,7 +135,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-6">
-          Prototype · Authentication is mocked · No real data stored
+          Secure authentication connected to Supabase & local persistent database
         </p>
       </div>
     </div>

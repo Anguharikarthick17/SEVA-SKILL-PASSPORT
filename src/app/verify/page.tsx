@@ -20,6 +20,8 @@ import {
 import SkillBar from '@/components/shared/SkillBar';
 import { DEMO_PASSPORT } from '@/data';
 
+import { DataService } from '@/lib/data-service';
+
 function VerifyContent() {
   const searchParams = useSearchParams();
   const initialId = searchParams.get('id') || 'GSP-DEMO-001';
@@ -27,105 +29,15 @@ function VerifyContent() {
   const [activeRecord, setActiveRecord] = useState<any>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const demoRecords: Record<string, any> = {
-    'GSP-DEMO-001': {
-      id: 'GSP-DEMO-001',
-      title: 'Full Stack Developer Skill Passport',
-      candidateName: 'Sample Candidate',
-      issueDate: 'October 1, 2024',
-      validUntil: 'October 1, 2026',
-      status: 'VERIFIED_ACTIVE',
-      competencyScore: 87,
-      type: 'Competency Passport',
-      evidenceHash: 'sha256-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-      evidenceSummary: {
-        challenges: 15,
-        labs: 9,
-        projects: 2,
-        assessments: 3,
-      },
-      skills: DEMO_PASSPORT.skills.slice(0, 5),
-    },
-    'cred-001': {
-      id: 'cred-001',
-      title: 'Full Stack Development Course Completion',
-      candidateName: 'Arjun Sharma',
-      issueDate: 'October 1, 2024',
-      validUntil: 'Lifetime',
-      status: 'VERIFIED_ACTIVE',
-      competencyScore: 84,
-      type: 'Course Completion Certificate',
-      evidenceHash: 'sha256-4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a',
-      evidenceSummary: {
-        challenges: 12,
-        labs: 8,
-        projects: 2,
-        assessments: 2,
-      },
-      skills: DEMO_PASSPORT.skills.slice(0, 4),
-    },
-    'cred-002': {
-      id: 'cred-002',
-      title: 'Full Stack Practical Assessment',
-      candidateName: 'Arjun Sharma',
-      issueDate: 'October 1, 2024',
-      validUntil: 'October 1, 2026',
-      status: 'VERIFIED_ACTIVE',
-      competencyScore: 88,
-      type: 'Proctored Skill Assessment',
-      evidenceHash: 'sha256-ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d',
-      evidenceSummary: {
-        challenges: 8,
-        labs: 6,
-        projects: 1,
-        assessments: 1,
-      },
-      skills: DEMO_PASSPORT.skills.slice(0, 3),
-    },
-    'cred-003': {
-      id: 'cred-003',
-      title: 'SEVA Verified Skill Passport',
-      candidateName: 'Arjun Sharma',
-      issueDate: 'October 1, 2024',
-      validUntil: 'October 1, 2026',
-      status: 'VERIFIED_ACTIVE',
-      competencyScore: 87,
-      type: 'Comprehensive Skill Passport',
-      evidenceHash: 'sha256-7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069',
-      evidenceSummary: {
-        challenges: 15,
-        labs: 9,
-        projects: 2,
-        assessments: 3,
-      },
-      skills: DEMO_PASSPORT.skills.slice(0, 5),
-    },
-  };
-
-  const handleVerify = (idToVerify: string) => {
+  const handleVerify = async (idToVerify: string) => {
     const trimmed = idToVerify.trim();
+    if (!trimmed) return;
     setHasSearched(true);
-    if (demoRecords[trimmed]) {
-      setActiveRecord(demoRecords[trimmed]);
+    const result = await DataService.verifyById(trimmed);
+    if (result) {
+      setActiveRecord(result);
     } else {
-      // Create a simulated record if non-empty, else null
-      if (trimmed.length > 3) {
-        setActiveRecord({
-          id: trimmed.toUpperCase(),
-          title: 'Registered Candidate Competency Record',
-          candidateName: 'Verified Student',
-          issueDate: 'October 2024',
-          validUntil: 'October 2026',
-          status: 'VERIFIED_ACTIVE',
-          competencyScore: 82,
-          type: 'Simulated Prototype Record',
-          evidenceHash: `sha256-${Math.random().toString(36).substring(2)}${Math.random().toString(36).substring(2)}`,
-          evidenceSummary: { challenges: 10, labs: 6, projects: 1, assessments: 2 },
-          skills: DEMO_PASSPORT.skills.slice(0, 4),
-        });
-      } else {
-        setActiveRecord(null);
-      }
+      setActiveRecord(null);
     }
   };
 

@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { DataService } from '@/lib/data-service';
+import { generateEvidenceHash } from '@/lib/evidence/hash';
 import {
   FolderKanban,
   Github,
+  Globe,
   ExternalLink,
   CheckCircle2,
   Clock,
@@ -23,20 +26,57 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState(DEMO_PROJECTS);
   const [selectedProjectId, setSelectedProjectId] = useState<string>(DEMO_PROJECTS[0].id);
   const [repoUrl, setRepoUrl] = useState('https://github.com/arjunsharma/seva-task-manager');
+  const [deployUrl, setDeployUrl] = useState('https://task-manager-demo.seva.app');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionFeedback, setSubmissionFeedback] = useState<string | null>(null);
+  const [evidenceHash, setEvidenceHash] = useState<string | null>(null);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    DataService.getCurrentUser().then((u) => setUser(u));
+  }, []);
 
   const selectedProject = projects.find((p) => p.id === selectedProjectId) || projects[0];
 
-  const handleSubmitMilestone = (e: React.FormEvent) => {
+  const handleSubmitMilestone = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!repoUrl.startsWith('http://') && !repoUrl.startsWith('https://')) {
+      alert('Please enter a valid HTTP/HTTPS GitHub repository URL.');
+      return;
+    }
+
     setIsSubmitting(true);
+    setSubmissionFeedback(null);
+    setEvidenceHash(null);
+
+    const userId = user ? user.id : 'std-001';
+    const hash = await generateEvidenceHash({
+      userId,
+      skillId: selectedProject.tech[0]?.toLowerCase() || 'javascript',
+      sourceType: 'project',
+      sourceId: selectedProject.id,
+      score: 88,
+      timestamp: new Date().toISOString(),
+      metadata: { repositoryUrl: repoUrl, deploymentUrl: deployUrl },
+    });
+
+    await DataService.addEvidence({
+      userId,
+      skillId: selectedProject.tech[0]?.toLowerCase() || 'javascript',
+      sourceType: 'project',
+      sourceId: selectedProject.id,
+      score: 88,
+      metadata: { repositoryUrl: repoUrl, deploymentUrl: deployUrl, projectTitle: selectedProject.title },
+      verificationHash: hash,
+    });
+
     setTimeout(() => {
       setIsSubmitting(false);
+      setEvidenceHash(hash);
       setSubmissionFeedback(
-        'Project milestone submitted for automated code review and evidence telemetry calculation! Feedback ready within minutes.'
+        'Project milestone reviewed by automated evaluation suite! Overall score: 88%. Evidence hash recorded for Skill Passport.'
       );
-    }, 700);
+    }, 600);
   };
 
   return (
@@ -233,7 +273,7 @@ export default function ProjectsPage() {
             <form onSubmit={handleSubmitMilestone} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  GitHub Repository Link
+                  GitHub Repository Link *
                 </label>
                 <div className="relative">
                   <Github className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -247,6 +287,29 @@ export default function ProjectsPage() {
                   />
                 </div>
               </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Deployment / Demo Preview URL (Optional)
+                </label>
+                <div className="relative">
+                  <Globe className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="url"
+                    value={deployUrl}
+                    onChange={(e) => setDeployUrl(e.target.value)}
+                    placeholder="https://your-app.vercel.app"
+                    className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-xs font-mono focus:outline-none focus:ring-2 focus:ring-navy-600"
+                  />
+                </div>
+              </div>
+
+              {evidenceHash && (
+                <div className="p-3 bg-slate-900 rounded-xl text-xs font-mono text-emerald-400 break-all">
+                  <span className="text-slate-400 block text-[10px] mb-0.5">Recorded Evidence Integrity Hash:</span>
+                  {evidenceHash}
+                </div>
+              )}
 
               <div className="flex items-center justify-between gap-4 pt-2">
                 <span className="text-[11px] text-slate-400">

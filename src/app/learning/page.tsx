@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { DataService } from '@/lib/data-service';
 import {
   Play,
   CheckCircle2,
@@ -186,11 +187,27 @@ fetchUserSkillPassport("GSP-DEMO-001")
     }, 600);
   };
 
-  const handleMarkComplete = () => {
+  const [user, setUser] = useState<any>(null);
+  const totalCurriculumLessons = 15;
+  const dynamicProgressPercent = Math.min(
+    100,
+    Math.round((completedLessonIds.length / totalCurriculumLessons) * 100)
+  );
+
+  useEffect(() => {
+    DataService.getCurrentUser().then((u) => setUser(u));
+  }, []);
+
+  const handleMarkComplete = async () => {
     if (!completedLessonIds.includes(activeLessonId)) {
-      setCompletedLessonIds((prev) => [...prev, activeLessonId]);
+      const nextCompleted = [...completedLessonIds, activeLessonId];
+      setCompletedLessonIds(nextCompleted);
       setShowCompletionSuccess(true);
       setTimeout(() => setShowCompletionSuccess(false), 4000);
+
+      if (user) {
+        await DataService.markLessonComplete(user.id, activeLessonId, 'full-stack-development');
+      }
     }
   };
 
@@ -223,9 +240,12 @@ fetchUserSkillPassport("GSP-DEMO-001")
             <div className="hidden md:flex items-center gap-2 text-xs">
               <span className="text-slate-500">Course Progress:</span>
               <div className="w-28 bg-slate-200 rounded-full h-2 overflow-hidden">
-                <div className="bg-emerald-500 h-2 rounded-full" style={{ width: '68%' }} />
+                <div
+                  className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${dynamicProgressPercent}%` }}
+                />
               </div>
-              <span className="font-bold text-navy-900">68%</span>
+              <span className="font-bold text-navy-900">{dynamicProgressPercent}%</span>
             </div>
 
             <button
@@ -247,7 +267,7 @@ fetchUserSkillPassport("GSP-DEMO-001")
       {showCompletionSuccess && (
         <div className="bg-emerald-600 text-white px-4 py-2.5 text-center text-xs font-medium flex items-center justify-center gap-2 transition-all">
           <Award className="w-4 h-4" />
-          Lesson completed! +10 XP awarded towards your JavaScript Skill Passport evidence.
+          Lesson completed! Verified telemetry recorded ({dynamicProgressPercent}% course progress). Evidence added to your Skill Passport.
         </div>
       )}
 

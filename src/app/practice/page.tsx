@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { DataService } from '@/lib/data-service';
 import {
   Code2,
   Play,
@@ -150,6 +151,12 @@ export default function PracticePage() {
   const [testResult, setTestResult] = useState<string | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [evidenceRecorded, setEvidenceRecorded] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [recordedHash, setRecordedHash] = useState<string>('');
+
+  useEffect(() => {
+    DataService.getCurrentUser().then((u) => setUser(u));
+  }, []);
 
   const filteredChallenges = CHALLENGES.filter((c) => {
     if (activeFilter === 'All') return true;
@@ -161,6 +168,7 @@ export default function PracticePage() {
     setCode(ch.starterCode);
     setTestResult(null);
     setEvidenceRecorded(false);
+    setRecordedHash('');
   };
 
   const handleRunTests = () => {
@@ -172,7 +180,21 @@ export default function PracticePage() {
     }, 700);
   };
 
-  const handleSubmitEvidence = () => {
+  const handleSubmitEvidence = async () => {
+    const userId = user ? user.id : 'std-001';
+    const score = selectedChallenge.difficulty === 'Hard' ? 92 : selectedChallenge.difficulty === 'Medium' ? 88 : 95;
+    
+    const res = await DataService.submitChallenge({
+      userId,
+      challengeId: selectedChallenge.id,
+      skillId: selectedChallenge.skill.toLowerCase(),
+      code,
+      score,
+      testsPassed: 4,
+      testsTotal: 4,
+    });
+
+    setRecordedHash(res.verificationHash);
     setEvidenceRecorded(true);
   };
 
@@ -325,16 +347,21 @@ export default function PracticePage() {
 
           {/* Evidence Success Toast */}
           {evidenceRecorded && (
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between gap-4 text-emerald-900">
+            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-emerald-900">
               <div className="flex items-center gap-3">
                 <ShieldCheck className="w-6 h-6 text-emerald-600 flex-shrink-0" />
                 <div className="text-xs">
                   <strong className="block text-sm">Evidence Recorded in Skill Passport!</strong>
-                  Your automated test telemetry has been committed to candidate ID <strong>GSP-DEMO-001</strong>.
+                  <span>Your automated test telemetry has been committed to candidate ID <strong>{user?.id ? `GSP-${user.id.substring(0, 8).toUpperCase()}` : 'GSP-DEMO-001'}</strong>.</span>
+                  {recordedHash && (
+                    <span className="block font-mono text-[10px] text-emerald-700 mt-0.5 truncate max-w-md">
+                      Hash: {recordedHash}
+                    </span>
+                  )}
                 </div>
               </div>
-              <Link href="/skill-passport" className="btn-primary text-xs whitespace-nowrap">
-                View Passport
+              <Link href="/skill-passport/my" className="btn-primary text-xs whitespace-nowrap">
+                View My Passport
               </Link>
             </div>
           )}

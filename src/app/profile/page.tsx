@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { DataService } from '@/lib/data-service';
 import {
   User,
   Mail,
@@ -20,6 +21,7 @@ import {
 import { DEMO_STUDENT, INDIA_STATES, EDUCATION_OPTIONS } from '@/data';
 
 export default function ProfilePage() {
+  const [user, setUser] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: DEMO_STUDENT.name,
     email: DEMO_STUDENT.email,
@@ -34,8 +36,39 @@ export default function ProfilePage() {
 
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    DataService.getCurrentUser().then((u) => {
+      if (u) {
+        setUser(u);
+        setFormData({
+          name: u.fullName,
+          email: u.email,
+          mobile: u.mobile || '',
+          education: u.education || DEMO_STUDENT.education,
+          state: u.state || DEMO_STUDENT.state,
+          district: u.district || DEMO_STUDENT.district,
+          targetRole: u.targetRole || 'Full Stack Developer',
+          githubUsername: u.githubHandle || 'arjunsharma',
+          passportPublic: u.passportVisibility !== 'private',
+        });
+      }
+    });
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (user) {
+      await DataService.updateProfile(user.id, {
+        fullName: formData.name,
+        mobile: formData.mobile,
+        education: formData.education,
+        state: formData.state,
+        district: formData.district,
+        targetRole: formData.targetRole,
+        githubHandle: formData.githubUsername,
+        passportVisibility: formData.passportPublic ? 'public' : 'private',
+      });
+    }
     setSavedSuccess(true);
     setTimeout(() => setSavedSuccess(false), 3500);
   };

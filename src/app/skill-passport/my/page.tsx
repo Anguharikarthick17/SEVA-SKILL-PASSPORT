@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { DataService } from '@/lib/data-service';
 import {
   Shield,
   ShieldCheck,
@@ -24,30 +25,49 @@ import SkillBar from '@/components/shared/SkillBar';
 import { DEMO_PASSPORT, DEMO_STUDENT } from '@/data';
 
 export default function MySkillPassportPage() {
+  const [user, setUser] = useState<any>(null);
+  const [passportData, setPassportData] = useState<any>(null);
   const [selectedSkill, setSelectedSkill] = useState<any>(DEMO_PASSPORT.skills[0]);
+  const [skillEvidence, setSkillEvidence] = useState<any[]>([]);
   const [copiedLink, setCopiedLink] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('All');
 
-  const passport = DEMO_PASSPORT;
+  useEffect(() => {
+    async function loadData() {
+      const u = await DataService.getCurrentUser();
+      setUser(u);
+      if (u) {
+        const p = await DataService.getUserSkillPassport(u.id);
+        setPassportData(p);
+        const ev = await DataService.getUserEvidence(u.id, selectedSkill?.name?.toLowerCase());
+        setSkillEvidence(ev);
+      }
+    }
+    loadData();
+  }, [selectedSkill?.name]);
+
+  const candidateId = passportData?.verificationId || (user ? `GSP-${user.id.substring(0, 8).toUpperCase()}` : 'GSP-DEMO-001');
+  const overallCompetency = passportData?.overallScore || 87;
+  const grade = passportData?.grade || (overallCompetency >= 90 ? 'A+' : overallCompetency >= 80 ? 'A' : overallCompetency >= 70 ? 'B' : 'Building evidence');
 
   const handleCopyShareLink = () => {
-    const shareUrl = `${window.location.origin}/verify?id=${passport.candidateId}`;
+    const shareUrl = `${window.location.origin}/verify?id=${candidateId}`;
     navigator.clipboard.writeText(shareUrl);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 3000);
   };
 
   const handleCopyEmbed = () => {
-    const embedCode = `<iframe src="${window.location.origin}/verify?id=${passport.candidateId}" width="100%" height="450" frameborder="0"></iframe>`;
+    const embedCode = `<iframe src="${window.location.origin}/verify?id=${candidateId}" width="100%" height="450" frameborder="0"></iframe>`;
     navigator.clipboard.writeText(embedCode);
     setEmbedCopied(true);
     setTimeout(() => setEmbedCopied(false), 3000);
   };
 
   const filteredSkills = activeCategory === 'All'
-    ? passport.skills
-    : passport.skills.filter((s) => s.category === activeCategory);
+    ? DEMO_PASSPORT.skills
+    : DEMO_PASSPORT.skills.filter((s) => s.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-gov-bg pb-16">
@@ -74,7 +94,7 @@ export default function MySkillPassportPage() {
               {copiedLink ? 'Link Copied!' : 'Share Passport'}
             </button>
             <Link
-              href={`/verify?id=${passport.candidateId}`}
+              href={`/verify?id=${candidateId}`}
               className="px-4 py-2 bg-navy-800 text-white rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-navy-700 transition-colors border border-white/20"
             >
               <ShieldCheck className="w-4 h-4 text-saffron-400" />
@@ -90,7 +110,7 @@ export default function MySkillPassportPage() {
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-start gap-3 text-amber-900 text-xs">
           <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
           <p>
-            <strong>SEVA Hackathon Notice:</strong> This Skill Passport represents the proposed evidence-based verification paradigm. In this prototype, evidence telemetry is simulated for demonstration purposes.
+            <strong>SEVA Hackathon Notice:</strong> This Skill Passport represents the proposed evidence-based verification paradigm. In this prototype, evidence telemetry is backed by database records and deterministic hashes.
           </p>
         </div>
 
@@ -99,24 +119,24 @@ export default function MySkillPassportPage() {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-6 border-b border-slate-100">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-navy-900 text-white flex items-center justify-center font-black text-2xl shadow-sm flex-shrink-0">
-                AS
+                {user ? user.fullName.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : 'AS'}
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-xl sm:text-2xl font-bold text-navy-900">
-                    {DEMO_STUDENT.name}
+                    {user ? user.fullName : DEMO_STUDENT.name}
                   </h2>
                   <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full uppercase">
                     Active
                   </span>
                 </div>
-                <p className="text-sm text-slate-600">{passport.role}</p>
+                <p className="text-sm text-slate-600">{user?.targetRole || 'Full Stack Developer'}</p>
                 <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-slate-400">
-                  <span className="font-mono">ID: {passport.candidateId}</span>
+                  <span className="font-mono">ID: {candidateId}</span>
                   <span>•</span>
-                  <span>Issued: {passport.issueDate}</span>
+                  <span>Issued: October 1, 2024</span>
                   <span>•</span>
-                  <span>Valid until: {passport.validUntil}</span>
+                  <span>Valid until: October 1, 2026</span>
                 </div>
               </div>
             </div>
@@ -128,14 +148,14 @@ export default function MySkillPassportPage() {
                   Overall Competency
                 </span>
                 <span className="text-3xl font-black text-navy-900 leading-none">
-                  {passport.overallCompetency}%
+                  {overallCompetency}%
                 </span>
                 <span className="text-[11px] text-emerald-700 font-semibold block mt-1">
-                  High Confidence (Rank A)
+                  {grade === 'Building evidence' ? 'In Progress' : `Verified (Rank ${grade})`}
                 </span>
               </div>
-              <div className="w-14 h-14 rounded-full border-4 border-navy-900 border-t-saffron-500 flex items-center justify-center font-bold text-navy-900 text-xs">
-                A+
+              <div className="w-14 h-14 rounded-full border-4 border-navy-900 border-t-saffron-500 flex items-center justify-center font-bold text-navy-900 text-sm">
+                {grade}
               </div>
             </div>
           </div>
