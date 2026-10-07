@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --color-navy-deep: #0f1a40;
+  --color-navy: #1e3a8a;
+  --color-saffron: #f97316;
+  --color-bg: #f8f9fc;
+  --color-border: #e2e8f0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-inter);
+  background-color: var(--color-bg);
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid #1e3a8a;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Selection */
+::selection {
+  background: rgba(30, 58, 138, 0.15);
+  color: #0f1a40;
+}
+
+@layer components {
+  /* Gov-grade card */
+  .gov-card {
+    @apply bg-white rounded-xl border border-gov-border shadow-gov p-6;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-navy-900 text-white font-semibold rounded-lg hover:bg-navy-950 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy-600 focus-visible:ring-offset-2;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-navy-900 font-semibold rounded-lg border border-navy-200 hover:bg-navy-50 transition-all duration-200;
+  }
+
+  /* Saffron accent button */
+  .btn-saffron {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-saffron-500 text-white font-semibold rounded-lg hover:bg-saffron-600 transition-all duration-200;
+  }
+
+  /* Section heading */
+  .section-heading {
+    @apply text-3xl md:text-4xl font-bold text-navy-900 leading-tight;
+  }
+
+  /* Section subheading */
+  .section-sub {
+    @apply text-lg text-slate-600 leading-relaxed mt-3;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    @apply w-full h-2 bg-slate-100 rounded-full overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-700;
+  }
+
+  /* Skill score pill */
+  .skill-pill {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 bg-navy-50 text-navy-800 rounded-full text-sm font-medium border border-navy-100;
+  }
+
+  /* Demo label */
+  .demo-label {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-xs font-semibold;
+  }
+
+  /* Nav link */
+  .nav-link {
+    @apply text-sm font-medium text-slate-700 hover:text-navy-800 transition-colors duration-150 relative;
+  }
+
+  .nav-link-active {
+    @apply text-navy-800 font-semibold;
+  }
+}
+
+/* Gradient text utility */
+.gradient-text {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.saffron-text {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Passport card glass effect */
+.passport-glass {
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+/* Hero pattern */
+.hero-pattern {
+  background-image: radial-gradient(circle at 25% 25%, rgba(99,102,241,0.06) 0%, transparent 50%),
+                    radial-gradient(circle at 75% 75%, rgba(249,115,22,0.04) 0%, transparent 50%);
+}
+
+/* Step connector */
+.step-connector::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(to bottom, #1e3a8a, transparent);
+}
+
+/* Dashboard sidebar active */
+.sidebar-item-active {
+  @apply bg-navy-900 text-white;
+}
+
+.sidebar-item {
+  @apply text-slate-600 hover:bg-slate-100 hover:text-navy-800;
+}
