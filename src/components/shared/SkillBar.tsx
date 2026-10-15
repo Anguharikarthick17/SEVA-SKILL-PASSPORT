@@ -1,4 +1,4 @@
-import { cn, getScoreBarColor } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface SkillBarProps {
   name: string;
@@ -18,19 +18,19 @@ export default function SkillBar({ name, score, category, className, showLabel =
       {showLabel && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className={cn('font-medium text-slate-700', textSize)}>{name}</span>
+            <span className={cn('font-bold text-espresso-900', textSize)}>{name}</span>
             {category && (
-              <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.2 rounded font-normal">
+              <span className="text-[10px] text-milan-600 bg-milan-50 border border-milan-600/20 px-2 py-0.5 rounded-full font-semibold">
                 {category}
               </span>
             )}
           </div>
-          <span className={cn('font-semibold text-navy-800', textSize)}>{score}%</span>
+          <span className={cn('font-black text-milan-600 font-mono', textSize)}>{score}%</span>
         </div>
       )}
-      <div className={cn('w-full bg-slate-100 rounded-full overflow-hidden', barHeight)}>
+      <div className={cn('w-full bg-[#FFFDF7] border border-burgundy-900/20 rounded-full overflow-hidden p-[1px]', barHeight)}>
         <div
-          className={cn('h-full rounded-full transition-all duration-700', getScoreBarColor(score))}
+          className="h-full rounded-full transition-all duration-700 bg-gradient-to-r from-burgundy-700 to-burgundy-900 shadow-sm"
           style={{ width: `${score}%` }}
           role="progressbar"
           aria-valuenow={score}

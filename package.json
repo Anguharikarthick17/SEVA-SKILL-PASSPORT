@@ -6,10 +6,23 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test:scoring": "npx -y esbuild scripts/test-engine.ts --bundle --platform=node | node",
+    "test:assessment": "npx -y esbuild scripts/test-assessment-engine.ts --bundle --platform=node | node",
+    "test:auth": "npx -y esbuild scripts/test-auth-flows.ts --bundle --platform=node | node",
+    "test:passport": "npx -y esbuild scripts/test-passport-flow.ts --bundle --platform=node | node",
+    "test:project": "npx -y esbuild scripts/test-project-engine.ts --bundle --platform=node | node",
+    "test:phase8": "npx -y esbuild scripts/test-phase8-validation.ts --bundle --platform=node | node",
+    "test:phase8-6": "npx -y esbuild scripts/test-phase8-6-validation.ts --bundle --platform=node | node",
+    "test:audit": "npx -y esbuild scripts/test-phase11-audit.ts --bundle --platform=node | node",
+    "test:master": "npx -y esbuild scripts/test-master-theme-and-access.ts --bundle --platform=node | node",
+    "test:onboarding": "npx -y esbuild scripts/test-phase13-onboarding-flow.ts --bundle --platform=node | node",
+    "test:ultimate": "npx -y esbuild scripts/test-phase14-ultimate-master.ts --bundle --platform=node | node",
+    "test:branding": "npx -y esbuild scripts/test-branding-and-intro.ts --bundle --platform=node | node"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
+    "@monaco-editor/react": "^4.7.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-dialog": "^1.1.4",
     "@radix-ui/react-dropdown-menu": "^2.1.4",
@@ -21,6 +34,7 @@
     "@radix-ui/react-toast": "^1.2.4",
     "@radix-ui/react-tooltip": "^1.1.6",
     "@supabase/supabase-js": "^2.117.2",
+    "@types/three": "^0.186.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.0.0",
@@ -31,6 +45,7 @@
     "react-hook-form": "^7.54.0",
     "recharts": "^2.13.0",
     "tailwind-merge": "^2.6.0",
+    "three": "^0.186.1",
     "zod": "^3.24.0"
   },
   "devDependencies": {

@@ -1,151 +1,132 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { ArrowRight, BookOpen, Code2, FlaskConical, Rocket, BarChart3, Shield, CheckCircle2 } from 'lucide-react';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'How It Works',
-  description: 'Learn how SEVA Skill Passport transforms learning into evidence-backed competency.',
-};
+import Link from 'next/link';
+import {
+  ArrowRight,
+  BookOpen,
+  Code2,
+  Layers,
+  FileText,
+  ShieldCheck,
+  Award,
+  Sparkles,
+  CheckCircle2,
+} from 'lucide-react';
+import GlowButton from '@/components/ui/GlowButton';
 
 const STEPS = [
   {
     num: '01',
-    icon: Shield,
-    title: 'Choose a Skill',
-    desc: 'Select from available learning pathways. Each pathway is designed around a specific career domain — Full Stack Development, AI/ML, Data Analytics, and more.',
-    detail: 'Each pathway has a clear curriculum, defined competency outcomes, and a transparent assessment framework.',
-    color: 'bg-blue-600',
+    icon: BookOpen,
+    title: 'Choose a Career Pathway',
+    desc: 'Select from industry-vetted learning pathways. Each pathway is designed around a specific career domain — Full Stack Development, AI/ML, Cloud Computing, and more.',
+    detail: 'Every pathway includes a granular competency roadmap, structured learning milestones, and transparent rubric criteria.',
   },
   {
     num: '02',
     icon: BookOpen,
-    title: 'Learn',
-    desc: 'Access structured video lessons, reading materials, and your AI learning assistant.',
-    detail: 'The AI Tutor helps clarify concepts, provides examples, and asks practice questions — but operates only in learning mode.',
-    color: 'bg-indigo-600',
+    title: 'Learn with Structured Modules & AI Tutor',
+    desc: 'Access modular lessons, conceptual deep dives, and an on-demand AI learning companion.',
+    detail: 'The AI Tutor operates strictly in learning mode to clarify concepts and explain syntax errors, ensuring genuine comprehension.',
   },
   {
     num: '03',
     icon: Code2,
-    title: 'Practice',
-    desc: 'Work through coding labs and practice challenges that reinforce each concept.',
-    detail: 'Labs run in a structured environment with immediate feedback. Challenges test applied understanding, not just recall.',
-    color: 'bg-violet-600',
+    title: 'Practice in Hands-On Coding Labs',
+    desc: 'Work through interactive browser challenges with automated multi-case test runners.',
+    detail: 'Code executes in a secure environment with instant test case feedback. Repeated submissions are scaled by anti-spam diminishing return curves.',
   },
   {
     num: '04',
-    icon: FlaskConical,
-    title: 'Build',
-    desc: 'Complete real-world projects that require applying multiple skills together.',
-    detail: 'Projects are evaluated across dimensions: requirements implementation, code quality, testing, security, and evidence quality.',
-    color: 'bg-purple-600',
+    icon: Layers,
+    title: 'Build Full-Stack Capstone Projects',
+    desc: 'Implement production-style applications matching institutional specifications.',
+    detail: 'Projects require public GitHub repositories, deployed endpoints, and detailed implementation notes evaluated against 4 standard rubric dimensions.',
   },
   {
     num: '05',
-    icon: Rocket,
-    title: 'Demonstrate',
-    desc: 'Take structured assessments that generate verifiable evidence of your capability.',
-    detail: 'Assessments are skill-specific and contribute to your evidence bank. Scores reflect genuine performance, not just completion.',
-    color: 'bg-orange-600',
+    icon: FileText,
+    title: 'Demonstrate via Reviewer Evaluation',
+    desc: 'Faculty and accredited institutional reviewers inspect your capstones against standardized rubrics.',
+    detail: 'Evaluations require authoritative reviewer Bearer tokens, anti-self-review protection, and strict score boundary enforcement.',
   },
   {
     num: '06',
-    icon: Shield,
-    title: 'Build Your Skill Passport',
-    desc: 'All your evidence aggregates into a transparent, competency-based Skill Passport.',
-    detail: 'Employers can view your Skill Passport and understand exactly what you can do — backed by evidence, not just claims.',
-    color: 'bg-green-600',
+    icon: Award,
+    title: 'Collect Qualifying Evidence in Skill Passport',
+    desc: 'Passing project scores and proctored assessment attempts generate cryptographic SHA-256 evidence records.',
+    detail: 'Your verifiable Skill Passport becomes an unalterable, shareable portfolio accessible to hiring managers via a single public URL.',
   },
-];
-
-const FORMATS = [
-  { label: 'Video Lessons', desc: 'Structured, concise lessons with a clear learning objective per video.' },
-  { label: 'AI Learning Assistant', desc: 'Ask questions, get explanations, and practice concepts with AI guidance.' },
-  { label: 'Coding Labs', desc: 'Hands-on labs in a structured environment with automated feedback.' },
-  { label: 'Practice Challenges', desc: 'Timed challenges that test applied skill at increasing difficulty levels.' },
-  { label: 'Projects', desc: 'Full project implementations that require multi-skill integration.' },
-  { label: 'Assessments', desc: 'Structured evaluations that generate signed evidence for your passport.' },
 ];
 
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="bg-hero-gradient py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">How It Works</h1>
-          <p className="mt-5 text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed">
-            A six-step journey from choosing a skill to holding an evidence-backed Skill Passport.
+    <div className="min-h-screen bg-[#FFFDF7] text-espresso-900">
+      {/* Hero Header */}
+      <section className="bg-gradient-to-b from-[#FFFDF7] via-[#FFE4E6]/30 to-[#FFFDF7] py-16 sm:py-24 relative overflow-hidden border-b border-milan-600/10 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-5 bg-milan-50 border border-milan-600/30 rounded-full text-xs font-bold text-milan-600">
+            <Sparkles className="w-3.5 h-3.5 text-milan-600" />
+            <span>The SEVA Methodology</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-espresso-900 tracking-tight leading-tight max-w-4xl mx-auto">
+            How SEVA <span className="text-milan-600">Skill Passport</span> Works
+          </h1>
+          <p className="mt-4 text-base sm:text-lg text-espresso-muted max-w-2xl mx-auto leading-relaxed">
+            A comprehensive, connected 6-stage engineering continuum that turns theoretical learning into verified, recruiter-readable proof of ability.
           </p>
         </div>
       </section>
 
-      {/* Steps */}
-      <section className="py-20 bg-gov-bg">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 6-Stage Timeline */}
+      <section className="py-16 sm:py-24 border-b border-milan-600/10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="space-y-8">
-            {STEPS.map((step, i) => (
-              <div key={step.num} className="flex gap-6">
-                {/* Step indicator */}
-                <div className="flex flex-col items-center flex-shrink-0">
-                  <div className={`flex items-center justify-center w-12 h-12 rounded-xl ${step.color} shadow-md`}>
-                    <step.icon className="w-5 h-5 text-white" />
+            {STEPS.map((step, idx) => {
+              const Icon = step.icon;
+              return (
+                <div
+                  key={step.num}
+                  className="p-6 sm:p-8 rounded-3xl bg-white border border-milan-600/15 shadow-sm hover:border-milan-600/35 transition-all flex flex-col md:flex-row gap-6 items-start"
+                >
+                  <div className="flex items-center gap-3 md:flex-col md:items-center">
+                    <span className="w-10 h-10 rounded-2xl bg-milan-600 text-white font-black text-sm flex items-center justify-center shadow-md">
+                      {step.num}
+                    </span>
+                    <div className="w-10 h-10 rounded-xl bg-milan-50 text-milan-600 flex items-center justify-center border border-milan-600/20">
+                      <Icon className="w-5 h-5" />
+                    </div>
                   </div>
-                  {i < STEPS.length - 1 && (
-                    <div className="w-0.5 flex-1 bg-slate-200 mt-3" style={{ minHeight: '40px' }} />
-                  )}
-                </div>
-                {/* Content */}
-                <div className="gov-card flex-1 mb-0">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs font-bold text-slate-400 tracking-widest">STEP {step.num}</span>
+
+                  <div className="flex-1 space-y-2">
+                    <h2 className="text-xl font-black text-espresso-900">{step.title}</h2>
+                    <p className="text-sm text-espresso-muted leading-relaxed">{step.desc}</p>
+                    <div className="p-3.5 rounded-2xl bg-[#FFFDF7] border border-milan-600/10 text-xs text-espresso-800 leading-relaxed mt-3">
+                      <strong className="text-milan-600 font-bold">Verification Detail: </strong>
+                      {step.detail}
+                    </div>
                   </div>
-                  <h2 className="text-xl font-bold text-navy-900 mb-2">{step.title}</h2>
-                  <p className="text-slate-700 mb-3">{step.desc}</p>
-                  <p className="text-sm text-slate-500 leading-relaxed border-t border-slate-100 pt-3">
-                    {step.detail}
-                  </p>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Learning Formats */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="section-heading">Learning Experience</h2>
-            <p className="section-sub">Multiple formats designed for depth, not just breadth.</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {FORMATS.map((f) => (
-              <div key={f.label} className="gov-card hover:shadow-gov-md transition-all">
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle2 className="w-4 h-4 text-green-500 flex-shrink-0" />
-                  <h3 className="font-bold text-navy-900 text-sm">{f.label}</h3>
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed pl-6">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 bg-gov-bg">
-        <div className="max-w-2xl mx-auto px-4 text-center">
-          <h2 className="section-heading mb-4">Ready to start?</h2>
-          <p className="section-sub mb-8">Begin your journey with the Full Stack Developer pathway.</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/register" className="btn-primary">
-              Get Started
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link href="/courses/full-stack-development" className="btn-secondary">
-              View Full Stack Course
-            </Link>
+      {/* CTA Box */}
+      <section className="py-16 text-center">
+        <div className="max-w-2xl mx-auto px-4">
+          <h2 className="text-3xl font-black text-espresso-900 mb-3">Ready to Start Your Journey?</h2>
+          <p className="text-sm text-espresso-muted mb-6">
+            Explore our curriculum or create your free account to begin collecting verified competency records.
+          </p>
+          <div className="flex justify-center gap-4">
+            <GlowButton href="/courses" size="md" variant="primary">
+              Explore Courses <ArrowRight className="w-4 h-4 ml-1" />
+            </GlowButton>
+            <GlowButton href="/signup" size="md" variant="glass">
+              Get Started Free
+            </GlowButton>
           </div>
         </div>
       </section>

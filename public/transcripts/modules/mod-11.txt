@@ -1,0 +1,36 @@
+# Module 11: Testing
+**Concept Focus**: Unit Testing, Integration Verification & Test-Driven Development
+**Total Duration**: ~40 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 11: Testing
+*Automated Quality Gates & Test-Driven Development (TDD)*
+
+> "Module 11 covers testing and automated quality assurance. Learn to build resilient software using test-driven development, integration tests, and coverage analysis."
+
+### Part 2: Code Example: Integration Test with Vitest / Jest
+*Testing Business Logic Invariants*
+
+> "This automated test verifies that the scoring engine properly applies penalties while keeping scores within valid bounds, protecting system integrity."
+
+```javascript
+describe('Assessment Scoring Engine', () => {
+  it('clamps total score between 0 and 100 with negative penalties', () => {
+    const score = calculateRawScore({ correct: 2, incorrect: 8, penalty: 0.25 });
+    expect(score).toBeGreaterThanOrEqual(0);
+    expect(score).toBeLessThanOrEqual(100);
+  });
+});
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Testing Implementation Details Instead of Behavior*
+
+> "Testing internal implementation details makes test suites fragile. Focus on public inputs, outputs, and behaviors so you can refactor code with confidence."
+
+### Part 4: Module 11 Summary
+*Testing Suite Validation*
+
+> "Testing is the cornerstone of verified capability. Execute all test suites to confirm that system invariants and evidence engines remain green."

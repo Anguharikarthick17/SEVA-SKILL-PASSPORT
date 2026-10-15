@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# large media & master video/audio production renders
+video-production/*.mp4
+video-production/audio/
+scripts/video-assets/audio/

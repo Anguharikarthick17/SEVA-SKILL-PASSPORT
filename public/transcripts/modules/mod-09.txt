@@ -1,0 +1,35 @@
+# Module 09: Authentication & Security
+**Concept Focus**: JWT Token Lifecycles, Session Management & OWASP Defenses
+**Total Duration**: ~43 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 09: Authentication & Security
+*Identity Verification & Defense-in-Depth Engineering*
+
+> "Module 9 focuses on identity verification and application security. We study JWT lifecycles, HttpOnly cookie storage, role-based authorization, and OWASP defenses."
+
+### Part 2: Code Example: Secure Row Level Security (RLS) Policy
+*PostgreSQL Defense-in-Depth Authorization*
+
+> "PostgreSQL Row Level Security ensures that even if application code is misconfigured, the database engine prevents users from querying unauthorized records."
+
+```javascript
+CREATE POLICY "Users can only inspect own evidence"
+ON public.evidence_timeline
+FOR SELECT
+TO authenticated
+USING (user_id = auth.uid());
+-- Denies direct access to arbitrary records
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Storing Sensitive Tokens in localStorage*
+
+> "Storing authentication tokens in local storage exposes them to theft via Cross-Site Scripting. Always use HttpOnly, SameSite cookies for sensitive sessions."
+
+### Part 4: Module 09 Summary
+*Security & Integrity Verification*
+
+> "Security is paramount at SEVA. Complete the security audit lab and verify server-side authorization to earn your Security competency badge."

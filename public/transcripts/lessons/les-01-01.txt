@@ -1,0 +1,14 @@
+# How the Web Works
+
+**Module**: Module 01: Web Fundamentals
+**Competency**: Web Fundamentals
+
+## Spoken Narration Transcript
+
+1. Welcome to How the Web Works, part of Module 01: Web Fundamentals.
+
+2. The World Wide Web is a distributed hypertext system operating on top of the Internet protocol suite. When a user requests a resource, the browser initiates a TCP connection to the host address resolved by DNS. Data travels in discrete IP packets across internet exchange points, is reassembled at th
+
+3. In this lesson, you will master Understand client-server architecture over the global internet, Trace a request packet through routers, switches, and ISPs, Identify TCP/IP packet transmission basics.
+
+4. Review the key takeaways and complete the hands-on practice lab to record your evidence.

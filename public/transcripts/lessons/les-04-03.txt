@@ -1,0 +1,14 @@
+# Promises
+
+**Module**: Module 04: Advanced JavaScript
+**Competency**: JavaScript
+
+## Spoken Narration Transcript
+
+1. Welcome to Promises, part of Module 04: Advanced JavaScript.
+
+2. A Promise is an object representing the eventual completion or failure of an asynchronous operation. A promise is in one of three states: pending (initial state), fulfilled (operation completed successfully), or rejected (operation failed). Once settled, a promise cannot change state.
+
+3. In this lesson, you will master Construct custom Promises using the new Promise((resolve, reject) => {}) constructor, Chain operations with .then(), .catch(), and .finally(), Coordinate concurrent requests using Promise.all, Promise.allSettled, and Promise.race.
+
+4. Review the key takeaways and complete the hands-on practice lab to record your evidence.

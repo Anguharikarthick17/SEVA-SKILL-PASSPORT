@@ -1,0 +1,35 @@
+# Module 08: Databases
+**Concept Focus**: Relational Schema Normalization, Indexes & ACID Guarantees
+**Total Duration**: ~42 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 08: Databases
+*PostgreSQL Relational Modeling & Transaction Isolation*
+
+> "In Module 8, we explore database design and PostgreSQL engineering. We study normalization, B-Tree indexes, transaction isolation levels, and ACID guarantees."
+
+### Part 2: Code Example: Atomic Database Transaction with Rollback
+*PostgreSQL Financial and Evidence Integrity*
+
+> "Atomic database transactions guarantee that related operations succeed together. If any statement fails, the transaction rolls back, preserving database integrity."
+
+```javascript
+BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED;
+INSERT INTO assessment_attempts (id, user_id, status)
+VALUES ('att-123', 'usr-456', 'evaluated');
+INSERT INTO evidence_timeline (id, user_id, hash)
+VALUES ('ev-789', 'usr-456', 'sha256:abc...');
+COMMIT;
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Unindexed Foreign Keys & N+1 Query Cascades*
+
+> "A common pitfall is forgetting to index foreign keys. Without indexes, join queries trigger full table scans that degrade performance as data scales."
+
+### Part 4: Module 08 Summary
+*Database Engineering Evidence*
+
+> "Demonstrate relational schema design, query optimization, and transaction safety in our practical labs to qualify your database competency."

@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
+import AppShell from '@/components/layout/AppShell';
+import SkipToContent from '@/components/layout/SkipToContent';
+import CookieConsentBanner from '@/components/shared/CookieConsentBanner';
+import WelcomeIntro from '@/components/shared/WelcomeIntro';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -33,12 +35,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="min-h-screen flex flex-col bg-gov-bg">
-        <Navbar />
-        <main className="flex-1" id="main-content">
-          {children}
-        </main>
-        <Footer />
+      <body className="min-h-screen bg-[#FFFDF7] text-[#1C0D12] overflow-x-hidden w-full">
+        <WelcomeIntro />
+        <SkipToContent />
+        <AppShell>{children}</AppShell>
+        <CookieConsentBanner />
       </body>
     </html>
   );

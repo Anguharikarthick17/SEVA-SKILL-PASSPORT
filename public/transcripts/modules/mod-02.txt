@@ -1,0 +1,35 @@
+# Module 02: HTML & CSS
+**Concept Focus**: Semantic Architecture & Modern Flexbox/Grid Layouts
+**Total Duration**: ~41 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 02: HTML & CSS
+*Semantic Document Structure & Responsive Systems*
+
+> "Module 2 covers semantic markup and modern CSS layouts. Semantic HTML establishes an accessible document tree that works seamlessly across assistive technology."
+
+### Part 2: Code Example: Responsive Two-Column Grid
+*Mobile-First Layout without Fragile Floats*
+
+> "Here we define a responsive dashboard layout using CSS Grid. With repeat, auto fit, and minmax, the layout adapts fluidly without requiring hardcoded media queries."
+
+```javascript
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Div Soup & Missing Accessible Contrast*
+
+> "Avoid replacing buttons with clickable divs. Doing so strips away keyboard navigation, focus management, and accessibility roles."
+
+### Part 4: Module 02 Summary & Practice
+*Ready for Lab 02: Responsive Dashboard*
+
+> "Ensure your components meet WCAG double-A standards before submitting your practice lab. This completes the core requirements for Module 2."

@@ -1,0 +1,42 @@
+# Module 12: Deployment
+**Concept Focus**: Production Build Pipelines, Containerization & Edge Delivery
+**Total Duration**: ~42 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 12: Deployment
+*Continuous Integration, Containerization & Zero-Downtime Delivery*
+
+> "In Module 12, we study production deployment and cloud delivery. We cover containerization with Docker, CI/CD automated deployment pipelines, and global CDN caching."
+
+### Part 2: Code Example: Multi-Stage Dockerfile for Next.js
+*Minimal Production Attack Surface*
+
+> "Multi-stage Docker builds isolate the build environment from the production runtime, generating lightweight, secure container images without build tool clutter."
+
+```javascript
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/.next/standalone ./
+EXPOSE 3000
+CMD ["node", "server.js"]
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Hardcoding Production Secrets in Code or Docker Images*
+
+> "Never commit API keys or database passwords to Git repositories or bake them into Docker images. Always inject secrets at runtime through secure environment variables."
+
+### Part 4: Module 12 Summary & Full Stack Capstone
+*Complete Full Stack Qualification*
+
+> "Deploying a live production application completes your Full Stack journey. Your verified evidence will be cryptographically locked in your SEVA Skill Passport."

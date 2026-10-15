@@ -1,0 +1,40 @@
+# Module 05: React
+**Concept Focus**: Component Architecture, Reconciliation & Custom Hooks
+**Total Duration**: ~38 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 05: React
+*Declarative UI, Virtual DOM & Fiber Reconciliation*
+
+> "In Module 5, we master React component architecture. We explore how React schedules updates through the Fiber reconciler and how to design clean custom hooks."
+
+### Part 2: Code Example: Custom Hook for Async Data Fetching
+*Clean State Encapsulation with AbortController*
+
+> "This custom hook encapsulates asynchronous data loading. It integrates an AbortController in the cleanup function to prevent memory leaks when components unmount."
+
+```javascript
+function usePassportEvidence(userId) {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    api.getEvidence(userId, { signal: controller.signal })
+       .then(setData)
+       .catch(err => { if (!controller.signal.aborted) console.error(err); });
+    return () => controller.abort();
+  }, [userId]);
+  return data;
+}
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Infinite Re-render Loops in useEffect*
+
+> "Never omit dependencies from useEffect to silence warnings. That causes stale closures or infinite re-render loops. Always declare dependencies honestly."
+
+### Part 4: Module 05 Summary & Capstone Check
+*Front-End Competency Ledger*
+
+> "Your React competency is proven by building the Civic Services Dashboard project and achieving an authorized reviewer score above 70 percent."

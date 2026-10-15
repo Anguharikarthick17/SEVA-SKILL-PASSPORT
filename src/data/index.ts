@@ -1,4 +1,11 @@
 import type { Course, SkillPassportData, StudentProfile, Project, Assessment, FAQItem } from '@/types';
+import { FULL_STACK_MODULES } from './curriculum';
+import { REAL_CHALLENGES } from './challenges';
+import { MODULE_ASSESSMENTS } from './assessments';
+
+export * from './curriculum';
+export * from './challenges';
+export * from './assessments';
 
 export const COURSES: Course[] = [
   {
@@ -15,21 +22,20 @@ export const COURSES: Course[] = [
     enrolled: 1847,
     description:
       'A comprehensive programme that builds genuine full stack capability through structured learning, hands-on labs, real projects, and evidence-backed assessment.',
-    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'REST APIs', 'SQL', 'Git', 'Testing', 'Deployment'],
-    modules: [
-      { id: 'm01', number: '01', title: 'Web Fundamentals', lessons: [], status: 'completed' },
-      { id: 'm02', number: '02', title: 'HTML & CSS', lessons: [], status: 'completed' },
-      { id: 'm03', number: '03', title: 'JavaScript', lessons: [], status: 'completed' },
-      { id: 'm04', number: '04', title: 'Advanced JavaScript', lessons: [], status: 'current' },
-      { id: 'm05', number: '05', title: 'React', lessons: [], status: 'locked' },
-      { id: 'm06', number: '06', title: 'Node.js', lessons: [], status: 'locked' },
-      { id: 'm07', number: '07', title: 'REST APIs', lessons: [], status: 'locked' },
-      { id: 'm08', number: '08', title: 'Databases', lessons: [], status: 'locked' },
-      { id: 'm09', number: '09', title: 'Authentication', lessons: [], status: 'locked' },
-      { id: 'm10', number: '10', title: 'Git & GitHub', lessons: [], status: 'locked' },
-      { id: 'm11', number: '11', title: 'Testing', lessons: [], status: 'locked' },
-      { id: 'm12', number: '12', title: 'Deployment', lessons: [], status: 'locked' },
-    ],
+    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Node.js', 'REST APIs', 'SQL', 'Git', 'Testing', 'Deployment', 'TypeScript', 'PostgreSQL', 'Docker', 'AI Engineering'],
+    modules: FULL_STACK_MODULES.map((m) => ({
+      id: m.id,
+      number: m.number,
+      title: m.title,
+      status: m.status,
+      lessons: m.lessons.map((l) => ({
+        id: l.id,
+        title: l.title,
+        type: 'reading' as const,
+        duration: l.duration,
+        completed: m.status === 'completed',
+      })),
+    })),
   },
   {
     id: 'ai-ml',
@@ -307,17 +313,17 @@ export const DEMO_PROJECTS: Project[] = [
     id: 'proj-001',
     title: 'Task Management System',
     description:
-      'A full stack task management application with user authentication, real-time updates, and role-based access control.',
-    tech: ['React', 'Node.js', 'PostgreSQL'],
+      'Flagship Full Stack Capstone: End-to-end task management platform implementing Authentication, Role-based access, CRUD, REST API, Database, Validation, Error handling, Testing, Security, Git, and Deployment.',
+    tech: ['React', 'Node.js', 'PostgreSQL', 'JWT', 'Docker'],
     progress: 72,
     status: 'in-progress',
     sections: [
       { name: 'Requirements', status: 'complete', score: 95 },
-      { name: 'Implementation', status: 'in-progress', score: 70 },
-      { name: 'Tests', status: 'in-progress', score: 60 },
-      { name: 'Code Quality', status: 'pending' },
-      { name: 'Security', status: 'pending' },
-      { name: 'Evidence', status: 'pending' },
+      { name: 'Architecture', status: 'in-progress', score: 85 },
+      { name: 'Testing', status: 'in-progress', score: 75 },
+      { name: 'Code Quality', status: 'complete', score: 90 },
+      { name: 'Security', status: 'complete', score: 88 },
+      { name: 'Evidence', status: 'in-progress', score: 80 },
     ],
   },
   {

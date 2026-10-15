@@ -1,0 +1,35 @@
+# Module 10: Git & GitHub
+**Concept Focus**: Branching Strategies, Rebase Workflows & Conflict Resolution
+**Total Duration**: ~39 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 10: Git & GitHub
+*Version Control Architecture & Professional Git Workflows*
+
+> "In Module 10, we examine professional version control with Git and GitHub. We master the underlying object model, branching workflows, and conflict resolution."
+
+### Part 2: Code Example: Interactive Rebase & Branch Sync
+*Linear Commit History Hygiene*
+
+> "Interactive rebasing allows developers to clean up work-in-progress commits into atomic units with clear messages, producing an auditable project history."
+
+```javascript
+# Sync feature branch with main linearly
+git checkout feature/passport-telemetry
+git fetch origin
+git rebase origin/main
+# Squash messy WIP commits into clean atomic units
+git rebase -i HEAD~3
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Force Pushing to Shared Main Branches*
+
+> "Never force push to shared branches. It destroys collaborator commits. Enable GitHub branch protection rules to enforce pull requests and automated tests."
+
+### Part 4: Module 10 Summary
+*Collaboration Competency Verification*
+
+> "Your project submissions require valid GitHub repositories. Master Git hygiene to streamline reviews and record authentic collaboration evidence."

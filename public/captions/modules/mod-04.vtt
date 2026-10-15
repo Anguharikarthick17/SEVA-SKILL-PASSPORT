@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: Advanced JavaScript
+
+1
+00:00:00.000 --> 00:00:11.122
+Module 4 explores the JavaScript event loop, microtask queues, and asynchronous concurrency patterns. Understanding queue priority is vital for high-performance apps.
+
+2
+00:00:11.122 --> 00:00:20.202
+Using Promise.allSettled lets you run concurrent asynchronous requests safely. If one network call fails, other data still loads successfully.
+
+3
+00:00:20.202 --> 00:00:30.363
+Never ignore unhandled promise rejections. In production services, an unhandled rejection can terminate the server process or cause silent client failures.
+
+4
+00:00:30.363 --> 00:00:38.057
+Complete the performance profiling lab and timed assessment to log verified evidence for advanced JavaScript in your passport.

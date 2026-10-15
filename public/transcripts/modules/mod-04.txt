@@ -1,0 +1,37 @@
+# Module 04: Advanced JavaScript
+**Concept Focus**: Event Loop, Promises & Concurrent Microtask Processing
+**Total Duration**: ~38 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 04: Advanced JavaScript
+*The Event Loop, Microtask Queue & Memory Lifecycle*
+
+> "Module 4 explores the JavaScript event loop, microtask queues, and asynchronous concurrency patterns. Understanding queue priority is vital for high-performance apps."
+
+### Part 2: Code Example: Robust Parallel Async Execution
+*Promise.allSettled for Fault-Tolerant Aggregation*
+
+> "Using Promise.allSettled lets you run concurrent asynchronous requests safely. If one network call fails, other data still loads successfully."
+
+```javascript
+async function fetchStudentDossier(studentId) {
+  const results = await Promise.allSettled([
+    fetchProfile(studentId),
+    fetchEvidence(studentId),
+    fetchAssessments(studentId),
+  ]);
+  return results.map(r => r.status === 'fulfilled' ? r.value : null);
+}
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Unhandled Promise Rejections & Memory Leaks*
+
+> "Never ignore unhandled promise rejections. In production services, an unhandled rejection can terminate the server process or cause silent client failures."
+
+### Part 4: Module 04 Summary
+*Advanced Architecture Verification*
+
+> "Complete the performance profiling lab and timed assessment to log verified evidence for advanced JavaScript in your passport."

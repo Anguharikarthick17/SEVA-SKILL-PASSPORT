@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Lesson: How the Web Works
+
+1
+00:00:00.000 --> 00:00:10.955
+Welcome to How the Web Works, part of Module 01: Web Fundamentals.
+
+2
+00:00:10.955 --> 00:00:21.910
+The World Wide Web is a distributed hypertext system operating on top of the Internet protocol suite. When a user requests a resource, the browser initiates a TCP connection to the host address resolved by DNS. Data travels in discrete IP packets across internet exchange points, is reassembled at th
+
+3
+00:00:21.910 --> 00:00:32.865
+In this lesson, you will master Understand client-server architecture over the global internet, Trace a request packet through routers, switches, and ISPs, Identify TCP/IP packet transmission basics.
+
+4
+00:00:32.865 --> 00:00:43.820
+Review the key takeaways and complete the hands-on practice lab to record your evidence.

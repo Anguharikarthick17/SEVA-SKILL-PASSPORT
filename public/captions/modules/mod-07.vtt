@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: REST APIs
+
+1
+00:00:00.000 --> 00:00:11.459
+Module 7 teaches professional REST API design. Learn clean resource modeling, idempotency semantics, standard error formatting, and API security headers.
+
+2
+00:00:11.459 --> 00:00:23.627
+By implementing RFC 7807 problem details, your API provides standardized error objects with status, title, details, and machine-readable error types.
+
+3
+00:00:23.627 --> 00:00:36.621
+Never return HTTP 200 for error responses. Doing so blinds monitoring tools, CDNs, and API gateways. Always return proper 4xx and 5xx status codes.
+
+4
+00:00:36.621 --> 00:00:44.226
+Build and test production REST endpoints with schema validation and error handling to generate verified Skill Passport evidence.

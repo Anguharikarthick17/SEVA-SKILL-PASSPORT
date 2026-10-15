@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: Authentication & Security
+
+1
+00:00:00.000 --> 00:00:13.317
+Module 9 focuses on identity verification and application security. We study JWT lifecycles, HttpOnly cookie storage, role-based authorization, and OWASP defenses.
+
+2
+00:00:13.317 --> 00:00:23.505
+PostgreSQL Row Level Security ensures that even if application code is misconfigured, the database engine prevents users from querying unauthorized records.
+
+3
+00:00:23.505 --> 00:00:34.358
+Storing authentication tokens in local storage exposes them to theft via Cross-Site Scripting. Always use HttpOnly, SameSite cookies for sensitive sessions.
+
+4
+00:00:34.358 --> 00:00:43.483
+Security is paramount at SEVA. Complete the security audit lab and verify server-side authorization to earn your Security competency badge.

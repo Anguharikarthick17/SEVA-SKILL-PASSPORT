@@ -1,0 +1,39 @@
+# Module 07: REST APIs
+**Concept Focus**: RESTful Resource Design, Idempotency & Error Standards
+**Total Duration**: ~44 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 07: REST APIs
+*Resource Architecture, HTTP Verbs & Status Code Semantics*
+
+> "Module 7 teaches professional REST API design. Learn clean resource modeling, idempotency semantics, standard error formatting, and API security headers."
+
+### Part 2: Code Example: Standardized RFC 7807 Error Response
+*Predictable API Error Handling*
+
+> "By implementing RFC 7807 problem details, your API provides standardized error objects with status, title, details, and machine-readable error types."
+
+```javascript
+export function formatApiError(res, status, title, detail, instance) {
+  return res.status(status).json({
+    type: 'https://seva.edu/errors/' + status,
+    title,
+    status,
+    detail,
+    instance,
+    timestamp: new Date().toISOString()
+  });
+}
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Returning 200 OK for Business Failures*
+
+> "Never return HTTP 200 for error responses. Doing so blinds monitoring tools, CDNs, and API gateways. Always return proper 4xx and 5xx status codes."
+
+### Part 4: Module 07 Summary
+*API Competency Verification*
+
+> "Build and test production REST endpoints with schema validation and error handling to generate verified Skill Passport evidence."

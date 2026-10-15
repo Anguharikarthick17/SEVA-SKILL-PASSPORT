@@ -1,0 +1,14 @@
+# HTTP and HTTPS
+
+**Module**: Module 01: Web Fundamentals
+**Competency**: Web Fundamentals
+
+## Spoken Narration Transcript
+
+1. Welcome to HTTP and HTTPS, part of Module 01: Web Fundamentals.
+
+2. HTTP is an application-layer protocol for transmitting hypermedia documents. Plaintext HTTP (port 80) transmits requests without encryption, exposing credentials and session tokens to packet sniffing. HTTPS (port 443) layers HTTP over TLS (Transport Layer Security), which encrypts the payload, ensur
+
+3. In this lesson, you will master Explain the stateless nature of HTTP/1.1 and multiplexing in HTTP/2 & HTTP/3, Understand TLS handshake mechanisms and public key infrastructure, Identify how SSL/TLS certificates prevent eavesdropping and man-in-the-middle attacks.
+
+4. Review the key takeaways and complete the hands-on practice lab to record your evidence.

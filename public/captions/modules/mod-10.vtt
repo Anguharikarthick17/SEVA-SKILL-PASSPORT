@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: Git & GitHub
+
+1
+00:00:00.000 --> 00:00:10.639
+In Module 10, we examine professional version control with Git and GitHub. We master the underlying object model, branching workflows, and conflict resolution.
+
+2
+00:00:10.639 --> 00:00:19.967
+Interactive rebasing allows developers to clean up work-in-progress commits into atomic units with clear messages, producing an auditable project history.
+
+3
+00:00:19.967 --> 00:00:29.908
+Never force push to shared branches. It destroys collaborator commits. Enable GitHub branch protection rules to enforce pull requests and automated tests.
+
+4
+00:00:29.908 --> 00:00:39.034
+Your project submissions require valid GitHub repositories. Master Git hygiene to streamline reviews and record authentic collaboration evidence.

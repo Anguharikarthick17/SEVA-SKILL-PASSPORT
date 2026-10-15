@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: Deployment
+
+1
+00:00:00.000 --> 00:00:11.986
+In Module 12, we study production deployment and cloud delivery. We cover containerization with Docker, CI/CD automated deployment pipelines, and global CDN caching.
+
+2
+00:00:11.986 --> 00:00:21.832
+Multi-stage Docker builds isolate the build environment from the production runtime, generating lightweight, secure container images without build tool clutter.
+
+3
+00:00:21.832 --> 00:00:32.446
+Never commit API keys or database passwords to Git repositories or bake them into Docker images. Always inject secrets at runtime through secure environment variables.
+
+4
+00:00:32.446 --> 00:00:41.585
+Deploying a live production application completes your Full Stack journey. Your verified evidence will be cryptographically locked in your SEVA Skill Passport.

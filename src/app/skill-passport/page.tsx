@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Shield, Info, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowRight, Shield, Info, ChevronDown, ChevronUp, Award, CheckCircle2, Sparkles } from 'lucide-react';
 import SkillBar from '@/components/shared/SkillBar';
 import { DEMO_PASSPORT } from '@/data';
 import type { SkillScore } from '@/types';
+import GlowButton from '@/components/ui/GlowButton';
 
 export default function SkillPassportPage() {
   const passport = DEMO_PASSPORT;
@@ -18,141 +19,92 @@ export default function SkillPassportPage() {
   }, {} as Record<string, SkillScore[]>);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#FFFDF7] text-espresso-900 pb-24">
       {/* Hero */}
-      <section className="bg-hero-gradient py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-sm font-semibold text-saffron-400 uppercase tracking-widest mb-3">Skill Passport</p>
-          <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-            From Proof of Course to<br />Proof of Ability.
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FFFDF7] via-[#FFE4E6]/30 to-[#FFFDF7] py-16 sm:py-24 text-center border-b border-milan-600/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-milan-50 rounded-full text-xs font-bold uppercase tracking-wider text-milan-600 mb-4 border border-milan-600/30">
+            <Shield className="w-4 h-4 text-milan-600" />
+            Evidence-Backed Competency Ledger
+          </div>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-espresso-900">
+            From Proof of Course to<br />
+            <span className="text-milan-600">Proof of Ability.</span>
           </h1>
-          <p className="mt-5 text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed">
-            Your Skill Passport aggregates evidence from every challenge, lab, project, and assessment
-            into a transparent, evidence-backed competency profile.
+          <p className="mt-4 text-base sm:text-lg text-espresso-muted max-w-2xl mx-auto leading-relaxed">
+            Your Skill Passport aggregates telemetry from every challenge, lab, capstone project, and timed assessment into a tamper-verifiable competency profile.
           </p>
         </div>
       </section>
 
-      {/* Disclaimer */}
+      {/* Prototype Notice */}
       <div className="bg-amber-50 border-b border-amber-200 py-3">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 text-sm text-amber-800">
-          <Info className="w-4 h-4 text-amber-500 flex-shrink-0" />
-          The passport below is a <strong className="mx-1">Demonstration Profile</strong> with sample data only. It does not represent a real credential.
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center gap-2 text-xs sm:text-sm text-amber-900 font-medium">
+          <Info className="w-4 h-4 text-amber-700 flex-shrink-0" />
+          <span>The passport below is a <strong>Demonstration Profile</strong> with sample telemetry data for evaluation purposes.</span>
         </div>
       </div>
 
-      {/* Sample Passport */}
-      <section className="py-16 bg-gov-bg">
+      {/* Sample Passport Section */}
+      <section className="py-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Passport Header */}
-          <div className="bg-passport-gradient rounded-2xl p-8 mb-8 shadow-passport relative overflow-hidden">
-            <div className="absolute inset-0 hero-pattern pointer-events-none" />
-            <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          {/* Passport Master Card (Glossy Milan Red) */}
+          <div className="relative rounded-3xl p-8 mb-10 overflow-hidden bg-gradient-to-br from-[#9F1239] via-[#881337] to-[#4C0519] text-white shadow-xl border border-white/20">
+            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
               <div>
                 <div className="flex items-center gap-2 mb-3">
-                  <Shield className="w-5 h-5 text-saffron-400" />
-                  <span className="text-saffron-400 text-sm font-bold uppercase tracking-wider">SEVA Skill Passport</span>
-                  <span className="demo-label ml-2">Demonstration Profile</span>
+                  <div className="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-white/90">
+                    SEVA Skill Passport · Demonstrated Profile
+                  </span>
                 </div>
-                <h2 className="text-2xl font-bold text-white">{passport.candidateName}</h2>
-                <p className="text-blue-300 text-lg mt-1">{passport.role}</p>
-                <p className="text-white/50 text-xs mt-2">ID: {passport.candidateId}</p>
+                <h2 className="text-3xl font-black text-white">{passport.candidateName}</h2>
+                <p className="text-xs sm:text-sm text-white/80 mt-1">{passport.role}</p>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs font-mono">
+                  <span className="bg-white/15 px-2.5 py-1 rounded-md">ID: {passport.candidateId}</span>
+                  <span className="bg-white/15 px-2.5 py-1 rounded-md">Issued: {passport.issueDate}</span>
+                  <span className="bg-amber-400 text-espresso-900 font-bold px-2.5 py-1 rounded-md">VERIFIED GRADE A</span>
+                </div>
               </div>
-              <div className="text-center passport-glass rounded-xl p-5 min-w-[120px]">
-                <p className="text-5xl font-black text-saffron-400">{passport.overallCompetency}</p>
-                <p className="text-white/60 text-sm mt-1">/ 100</p>
-                <p className="text-white/80 text-xs mt-1 font-medium">Overall Competency</p>
+
+              {/* Overall Competency Gauge */}
+              <div className="text-center md:text-right bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/20">
+                <span className="text-xs text-white/80 font-medium block">Overall Competency</span>
+                <span className="text-4xl sm:text-5xl font-black text-white">{passport.overallCompetency}%</span>
+                <span className="text-[11px] text-amber-300 font-bold block mt-1">4 of 7 Core Evidenced</span>
               </div>
             </div>
           </div>
 
-          {/* Skill Categories */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Grouped Skills Grid (White/Cream Cards) */}
+          <div className="space-y-8">
             {categories.map((cat) => (
-              <div key={cat} className="gov-card">
-                <h3 className="font-bold text-navy-900 text-sm uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-navy-600" />
-                  {cat}
-                </h3>
-                <div className="space-y-4">
-                  {grouped[cat].map((skill) => (
-                    <div key={skill.name}>
-                      <SkillBar name={skill.name} score={skill.score} />
-                      <button
-                        onClick={() => setSelectedSkill(selectedSkill?.name === skill.name ? null : skill)}
-                        className="mt-1 text-xs text-navy-600 hover:text-navy-800 underline-offset-2 hover:underline transition-colors flex items-center gap-1"
-                        aria-expanded={selectedSkill?.name === skill.name}
-                      >
-                        View evidence
-                        {selectedSkill?.name === skill.name ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                      </button>
+              <div key={cat} className="p-6 sm:p-8 rounded-3xl bg-white border border-milan-600/15 shadow-sm">
+                <div className="flex items-center justify-between mb-6 pb-2 border-b border-milan-600/10">
+                  <h3 className="text-base font-extrabold text-espresso-900">{cat} Competencies</h3>
+                  <span className="text-xs text-espresso-muted font-mono">{grouped[cat]?.length || 0} Domains</span>
+                </div>
 
-                      {/* Evidence panel */}
-                      {selectedSkill?.name === skill.name && skill.evidence && (
-                        <div className="mt-3 p-4 bg-navy-50 rounded-xl border border-navy-100">
-                          <p className="text-sm font-bold text-navy-900 mb-3">
-                            {skill.name} — {skill.score}%
-                          </p>
-                          <div className="space-y-2">
-                            {skill.evidence.map((ev) => (
-                              <div key={ev.label} className="flex items-center justify-between text-sm">
-                                <span className="flex items-center gap-2 text-slate-600">
-                                  <span className={`w-2 h-2 rounded-full ${
-                                    ev.type === 'challenge' ? 'bg-blue-500' :
-                                    ev.type === 'lab' ? 'bg-indigo-500' :
-                                    ev.type === 'project' ? 'bg-violet-500' : 'bg-orange-500'
-                                  }`} />
-                                  {ev.label}
-                                </span>
-                                <span className="font-semibold text-navy-800">{ev.count}</span>
-                              </div>
-                            ))}
-                          </div>
-                          <p className="text-xs text-slate-400 mt-3 border-t border-navy-200 pt-2">
-                            Score derived from evidence performance across all completed activities.
-                          </p>
-                        </div>
-                      )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {grouped[cat]?.map((skill) => (
+                    <div
+                      key={skill.name}
+                      onClick={() => setSelectedSkill(selectedSkill?.name === skill.name ? null : skill)}
+                      className="p-4 rounded-2xl bg-[#FFFDF7] border border-milan-600/10 hover:border-milan-600/30 transition-all cursor-pointer"
+                    >
+                      <SkillBar name={skill.name} score={skill.score} category={skill.category} />
+                      <div className="mt-2.5 pt-2 border-t border-milan-600/10 flex items-center justify-between text-[11px] text-espresso-muted">
+                        <span>{skill.evidence?.reduce((sum, e) => sum + e.count, 0) || 0} verified artifacts</span>
+                        <span className="text-milan-600 font-bold">Inspect Provenance →</span>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-
-          {/* Evidence explanation */}
-          <div className="mt-8 gov-card">
-            <h3 className="font-bold text-navy-900 mb-4">Why This Score?</h3>
-            <p className="text-slate-600 text-sm mb-5 leading-relaxed">
-              Competency scores are not self-reported or based on simple quiz completion.
-              Each score is derived from performance evidence across multiple activity types:
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[
-                { label: 'Coding Challenges', color: 'bg-blue-100 text-blue-700', desc: 'Applied problem solving at increasing difficulty' },
-                { label: 'Labs', color: 'bg-indigo-100 text-indigo-700', desc: 'Hands-on implementation in structured environments' },
-                { label: 'Projects', color: 'bg-violet-100 text-violet-700', desc: 'End-to-end implementation of real-world applications' },
-                { label: 'Assessments', color: 'bg-orange-100 text-orange-700', desc: 'Structured evaluations generating signed evidence' },
-              ].map((e) => (
-                <div key={e.label} className="text-center p-3 rounded-xl bg-slate-50">
-                  <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold mb-2 ${e.color}`}>{e.label}</span>
-                  <p className="text-xs text-slate-500 leading-relaxed">{e.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-16 bg-white">
-        <div className="max-w-2xl mx-auto px-4 text-center">
-          <h2 className="section-heading mb-4">Build your own Skill Passport.</h2>
-          <p className="section-sub mb-8">Start learning and building evidence of what you can actually do.</p>
-          <Link href="/register" className="btn-primary">
-            Get Started
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
       </section>
     </div>

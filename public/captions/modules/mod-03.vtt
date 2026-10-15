@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: JavaScript Fundamentals
+
+1
+00:00:00.000 --> 00:00:10.895
+In Module 3, we dive into JavaScript execution contexts, lexical scope, variable hoisting, and how closures preserve access to parent environments.
+
+2
+00:00:10.895 --> 00:00:21.302
+In this example, the inner functions maintain a live reference to the private count variable. Outside code cannot mutate count directly, demonstrating encapsulation.
+
+3
+00:00:21.302 --> 00:00:31.275
+Using var in asynchronous loops binds a single variable across all iterations. Always declare loop counters with block-scoped let to prevent subtle race conditions.
+
+4
+00:00:31.275 --> 00:00:40.436
+Your Skill Passport evaluates JavaScript ability through automated test execution. Write pure, predictable functions to qualify your score.

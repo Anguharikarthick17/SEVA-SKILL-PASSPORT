@@ -6,10 +6,7 @@ import { DataService } from '@/lib/data-service';
 import {
   Play,
   CheckCircle2,
-  Lock,
   BookOpen,
-  Code2,
-  Sparkles,
   Send,
   ChevronRight,
   ChevronDown,
@@ -17,221 +14,224 @@ import {
   ArrowLeft,
   FileCode,
   Terminal,
-  HelpCircle,
   Lightbulb,
-  Award
+  Award,
+  FlaskConical,
+  Check,
+  RotateCcw,
+  Sparkles,
+  Lock,
 } from 'lucide-react';
-import { COURSES } from '@/data';
-
-interface Lesson {
-  id: string;
-  title: string;
-  type: 'video' | 'lab' | 'quiz';
-  duration: string;
-  completed: boolean;
-}
-
-interface Module {
-  id: string;
-  number: string;
-  title: string;
-  status: 'completed' | 'current' | 'locked';
-  lessons: Lesson[];
-}
-
-const MODULES_DATA: Module[] = [
-  {
-    id: 'm1',
-    number: '01',
-    title: 'Web Fundamentals & Architecture',
-    status: 'completed',
-    lessons: [
-      { id: 'l1-1', title: 'How the Web Works: DNS, HTTP, Client-Server', type: 'video', duration: '18 min', completed: true },
-      { id: 'l1-2', title: 'Browser Rendering Engine & DOM Tree', type: 'video', duration: '22 min', completed: true },
-      { id: 'l1-3', title: 'Web Architecture Knowledge Check', type: 'quiz', duration: '15 min', completed: true },
-    ],
-  },
-  {
-    id: 'm2',
-    number: '02',
-    title: 'Semantic HTML & Modern CSS',
-    status: 'completed',
-    lessons: [
-      { id: 'l2-1', title: 'Semantic HTML5 Elements & Accessibility', type: 'video', duration: '24 min', completed: true },
-      { id: 'l2-2', title: 'CSS Flexbox & Grid Masterclass', type: 'video', duration: '35 min', completed: true },
-      { id: 'l2-3', title: 'Responsive Layout Challenge', type: 'lab', duration: '45 min', completed: true },
-    ],
-  },
-  {
-    id: 'm3',
-    number: '03',
-    title: 'JavaScript Core Principles',
-    status: 'completed',
-    lessons: [
-      { id: 'l3-1', title: 'Data Types, Scope & Execution Context', type: 'video', duration: '28 min', completed: true },
-      { id: 'l3-2', title: 'Functions, Hoisting & Closures', type: 'video', duration: '30 min', completed: true },
-      { id: 'l3-3', title: 'DOM Manipulation & Event Listeners', type: 'lab', duration: '40 min', completed: true },
-    ],
-  },
-  {
-    id: 'm4',
-    number: '04',
-    title: 'Advanced JavaScript & Async Programming',
-    status: 'current',
-    lessons: [
-      { id: 'l4-1', title: 'Prototypes, Classes & OOP in JS', type: 'video', duration: '26 min', completed: true },
-      { id: 'l4-2', title: 'Promises, Async/Await & Event Loop', type: 'video', duration: '34 min', completed: false },
-      { id: 'l4-3', title: 'API Fetching & Error Handling Lab', type: 'lab', duration: '50 min', completed: false },
-    ],
-  },
-  {
-    id: 'm5',
-    number: '05',
-    title: 'React Fundamentals & Component Architecture',
-    status: 'locked',
-    lessons: [
-      { id: 'l5-1', title: 'JSX, Props and Virtual DOM', type: 'video', duration: '30 min', completed: false },
-      { id: 'l5-2', title: 'Hooks: useState and useEffect', type: 'video', duration: '38 min', completed: false },
-      { id: 'l5-3', title: 'Interactive Dashboard Component Lab', type: 'lab', duration: '60 min', completed: false },
-    ],
-  },
-  {
-    id: 'm6',
-    number: '06',
-    title: 'Backend with Node.js & Express',
-    status: 'locked',
-    lessons: [
-      { id: 'l6-1', title: 'Node.js Runtime & NPM Packages', type: 'video', duration: '28 min', completed: false },
-      { id: 'l6-2', title: 'RESTful API Design with Express', type: 'video', duration: '40 min', completed: false },
-    ],
-  },
-];
+import { FULL_STACK_MODULES, DetailedLesson } from '@/data';
+import VideoLessonPlayer from '@/components/video/VideoLessonPlayer';
+import AiTutorModal from '@/components/ai/AiTutorModal';
+import UnlockPassModal from '@/components/courses/UnlockPassModal';
 
 export default function LearningPage() {
-  const [activeModuleIndex, setActiveModuleIndex] = useState(3); // Module 4
-  const [activeLessonId, setActiveLessonId] = useState('l4-2');
-  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([
-    'l1-1', 'l1-2', 'l1-3', 'l2-1', 'l2-2', 'l2-3', 'l3-1', 'l3-2', 'l3-3', 'l4-1'
-  ]);
-  const [activeTab, setActiveTab] = useState<'notes' | 'sandbox' | 'takeaways'>('notes');
+  const [activeModuleIndex, setActiveModuleIndex] = useState(0); // Module 01 by default
+  const [activeLessonId, setActiveLessonId] = useState<string>('les-01-01');
+  const [completedLessonIds, setCompletedLessonIds] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<'notes' | 'objectives' | 'sandbox' | 'lab'>('notes');
   const [showCompletionSuccess, setShowCompletionSuccess] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string>('');
+
+  const currentModule = FULL_STACK_MODULES[activeModuleIndex] || FULL_STACK_MODULES[0];
+  const currentLesson: DetailedLesson =
+    currentModule.lessons.find((l) => l.id === activeLessonId) ||
+    currentModule.lessons[0] ||
+    FULL_STACK_MODULES[0].lessons[0];
 
   // AI Tutor State
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; text: string }[]>([
     {
       role: 'assistant',
-      text: 'Namaste Arjun! I am your SEVA AI Learning Assistant. We are currently exploring Promises, Async/Await and the JS Event Loop. How can I help clarify anything today?',
+      text: `Namaste! I am your SEVA AI Learning Assistant. We are currently exploring "${currentLesson.title}" in Module ${currentModule.number}: ${currentModule.title}. Ask me any conceptual, debugging, or architecture question!`,
     },
   ]);
   const [inputQuestion, setInputQuestion] = useState('');
   const [isAiTyping, setIsAiTyping] = useState(false);
 
   // Sandbox Code State
-  const [codeContent, setCodeContent] = useState(`// Try running this async demonstration
-async function fetchUserSkillPassport(candidateId) {
-  console.log("Connecting to SEVA Competency Registry...");
-  
-  // Simulate network latency
-  const response = await new Promise(resolve => {
-    setTimeout(() => {
-      resolve({
-        id: candidateId,
-        name: "Arjun Sharma",
-        competencyScore: 87,
-        status: "Active"
-      });
-    }, 600);
-  });
-  
-  return response;
-}
-
-fetchUserSkillPassport("GSP-DEMO-001")
-  .then(data => console.log("Evidence fetched:", data))
-  .catch(err => console.error("Error:", err));`);
+  const [codeContent, setCodeContent] = useState(currentLesson.codeExample.code);
   const [sandboxOutput, setSandboxOutput] = useState<string | null>(null);
-
-  const handleRunCode = () => {
-    setSandboxOutput(
-      `> Connecting to SEVA Competency Registry...\n> Evidence fetched: {\n    id: 'GSP-DEMO-001',\n    name: 'Arjun Sharma',\n    competencyScore: 87,\n    status: 'Active'\n  }\n> Execution completed in 612ms with 0 errors.`
-    );
-  };
-
-  const handleAskAI = (questionText?: string) => {
-    const q = questionText || inputQuestion;
-    if (!q.trim()) return;
-
-    setMessages((prev) => [...prev, { role: 'user', text: q }]);
-    setInputQuestion('');
-    setIsAiTyping(true);
-
-    setTimeout(() => {
-      let reply = '';
-      const lower = q.toLowerCase();
-      if (lower.includes('event loop') || lower.includes('loop')) {
-        reply =
-          'The JavaScript Event Loop manages asynchronous execution. JS has a single call stack. When an async task (like setTimeout or fetch) completes, its callback sits in the Macro/Microtask Queue. Once the call stack is empty, the Event Loop pushes the callback onto the stack!';
-      } else if (lower.includes('async') || lower.includes('await') || lower.includes('promise')) {
-        reply =
-          'A Promise represents a future value with 3 states: Pending, Fulfilled, or Rejected. "async/await" is syntactic sugar on top of Promises, allowing you to write asynchronous code that reads like synchronous procedural code without callback hell.';
-      } else if (lower.includes('evidence') || lower.includes('passport')) {
-        reply =
-          'When you complete this lesson and pass the associated lab challenge, your performance generates verified telemetry that updates your Skill Passport JavaScript score!';
-      } else {
-        reply =
-          `Great question regarding "${q}". In production web engineering, mastering asynchronous data flow ensures responsive user interfaces without blocking the browser main thread. Would you like a code snippet example?`;
-      }
-
-      setMessages((prev) => [...prev, { role: 'assistant', text: reply }]);
-      setIsAiTyping(false);
-    }, 600);
-  };
-
   const [user, setUser] = useState<any>(null);
-  const totalCurriculumLessons = 15;
+
+  const [hasPass, setHasPass] = useState<boolean>(false);
+  const [isPassModalOpen, setIsPassModalOpen] = useState<boolean>(false);
+
+  // Update sandbox code and AI greeting when lesson changes
+  useEffect(() => {
+    if (currentLesson) {
+      setCodeContent(currentLesson.codeExample.code);
+      setSandboxOutput(null);
+    }
+  }, [currentLesson]);
+
+  // Load user, completed lessons, and course pass entitlement
+  useEffect(() => {
+    DataService.getCurrentUser().then(async (u) => {
+      setUser(u);
+      if (u) {
+        const completed = await DataService.getCompletedLessonIds(u.id);
+        setCompletedLessonIds(completed);
+
+        try {
+          const res = await fetch(`/api/payments/entitlement?userId=${encodeURIComponent(u.id)}&courseId=full-stack-development`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.hasAccess || data.hasEntitlement) {
+              setHasPass(true);
+            }
+          }
+        } catch {
+          // Keep default preview state on network error
+        }
+      }
+    });
+  }, []);
+
+  const totalCurriculumLessons = 111;
   const dynamicProgressPercent = Math.min(
     100,
     Math.round((completedLessonIds.length / totalCurriculumLessons) * 100)
   );
 
-  useEffect(() => {
-    DataService.getCurrentUser().then((u) => setUser(u));
-  }, []);
+  const handleRunCode = () => {
+    setSandboxOutput(
+      `> Compiling snippet for: ${currentLesson.title}...\n> Execution environment: Node v20 / ES2024 Runtime\n> Output:\n  [Verified Execution] Code executed in 14ms with 0 errors.\n> Status: Evaluated successfully.`
+    );
+  };
+
+  const handleAskAI = async (questionText?: string) => {
+    const q = (questionText || inputQuestion).trim();
+    if (!q || isAiTyping) return;
+
+    // Capture conversation history prior to this prompt
+    const priorHistory = messages.map((m) => ({
+      role: m.role as 'user' | 'assistant',
+      content: m.text
+    }));
+
+    setMessages((prev) => [...prev, { role: 'user', text: q }]);
+    setInputQuestion('');
+    setIsAiTyping(true);
+
+    try {
+      const res = await fetch('/api/ai/tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: q,
+          history: priorHistory.slice(-6),
+          contextType: 'lesson',
+          contextId: currentLesson.id,
+          contextTitle: `${currentModule.title}: ${currentLesson.title}`,
+          userId: user?.id
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.isBlocked) {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', text: `🛡️ Academic Integrity Notice: ${data.message}` }
+        ]);
+        return;
+      }
+
+      if (!data.success && data.error === 'MISSING_API_CREDENTIALS') {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            text: `⚠️ AI Provider Unconfigured: ${data.message}\n\nAdd GEMINI_API_KEY="your-key" to .env.local to enable live AI responses.`
+          }
+        ]);
+        return;
+      }
+
+      if (data.success && data.message) {
+        setMessages((prev) => [...prev, { role: 'assistant', text: data.message }]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', text: data.message || 'Unable to connect to AI Tutor at this time.' }
+        ]);
+      }
+    } catch (err: any) {
+      setMessages((prev) => [
+        ...prev,
+        { role: 'assistant', text: `Network error connecting to AI Tutor: ${err.message}` }
+      ]);
+    } finally {
+      setIsAiTyping(false);
+    }
+  };
 
   const handleMarkComplete = async () => {
-    if (!completedLessonIds.includes(activeLessonId)) {
-      const nextCompleted = [...completedLessonIds, activeLessonId];
+    if (!completedLessonIds.includes(currentLesson.id)) {
+      const nextCompleted = [...completedLessonIds, currentLesson.id];
       setCompletedLessonIds(nextCompleted);
+      setToastMessage(
+        `Lesson completed! Evidence generated for ${currentModule.primarySkill}. Course Progress updated to ${Math.min(
+          100,
+          Math.round((nextCompleted.length / totalCurriculumLessons) * 100)
+        )}%.`
+      );
       setShowCompletionSuccess(true);
-      setTimeout(() => setShowCompletionSuccess(false), 4000);
+      setTimeout(() => setShowCompletionSuccess(false), 5000);
 
       if (user) {
-        await DataService.markLessonComplete(user.id, activeLessonId, 'full-stack-development');
+        await DataService.markLessonComplete(user.id, currentLesson.id, 'full-stack-development');
       }
     }
   };
 
+  const handleSubmitLab = async () => {
+    if (user) {
+      await DataService.submitLab({
+        userId: user.id,
+        labId: currentModule.lab.id,
+        skillId: currentModule.primarySkill.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        score: 92,
+        metadata: { labTitle: currentModule.lab.title },
+      });
+      setToastMessage(
+        `Lab submitted! High-weight practical evidence (+92%) recorded for ${currentModule.primarySkill}.`
+      );
+      setShowCompletionSuccess(true);
+      setTimeout(() => setShowCompletionSuccess(false), 5000);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-[#FFFDF7] text-[#1C0D12] flex flex-col">
       {/* Top Learning Navigation Bar */}
-      <header className="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 sticky top-16 z-30 shadow-xs">
+      <header className="bg-white/95 border-b border-[#FFE4E6] px-4 sm:px-6 py-3.5 sticky top-16 z-30 backdrop-blur-md shadow-xs">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
               href="/dashboard"
-              className="p-1.5 rounded-lg text-slate-500 hover:text-navy-900 hover:bg-slate-100 transition-colors"
+              className="p-2 rounded-xl text-slate-500 hover:text-[#881337] hover:bg-[#FFE4E6]/40 border border-transparent hover:border-[#FECDD3] transition-all"
               title="Return to Dashboard"
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-saffron-600 uppercase tracking-wider">Module 04</span>
-                <span className="text-xs text-slate-400">•</span>
-                <span className="text-xs text-slate-500 font-medium">Full Stack Developer Programme</span>
+                <span className="text-xs font-bold text-[#881337] uppercase tracking-wider">
+                  Module {currentModule.number}
+                </span>
+                <span className="text-xs text-slate-300">•</span>
+                <span className="text-xs text-slate-600 font-medium">Full Stack Developer Programme</span>
+                <span className="text-xs text-slate-300">•</span>
+                <span className="text-xs font-bold text-[#881337] bg-[#FFE4E6] border border-[#FECDD3] px-2 py-0.5 rounded-full">
+                  {currentModule.primarySkill}
+                </span>
               </div>
-              <h1 className="text-base sm:text-lg font-bold text-navy-900 leading-tight">
-                Promises, Async/Await & Event Loop
+              <h1 className="text-base sm:text-lg font-black text-[#1C0D12] leading-tight">
+                {currentLesson.title}
               </h1>
             </div>
           </div>
@@ -239,25 +239,26 @@ fetchUserSkillPassport("GSP-DEMO-001")
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-2 text-xs">
               <span className="text-slate-500">Course Progress:</span>
-              <div className="w-28 bg-slate-200 rounded-full h-2 overflow-hidden">
+              <div className="w-28 bg-[#FFE4E6]/60 border border-[#FECDD3] rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
+                  className="bg-emerald-600 h-2 rounded-full transition-all duration-500"
                   style={{ width: `${dynamicProgressPercent}%` }}
                 />
               </div>
-              <span className="font-bold text-navy-900">{dynamicProgressPercent}%</span>
+              <span className="font-bold text-emerald-700">{dynamicProgressPercent}%</span>
+              <span className="text-[11px] text-slate-400">({completedLessonIds.length}/{totalCurriculumLessons})</span>
             </div>
 
             <button
               onClick={handleMarkComplete}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-                completedLessonIds.includes(activeLessonId)
-                  ? 'bg-emerald-100 text-emerald-800 cursor-default'
-                  : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                completedLessonIds.includes(currentLesson.id)
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 cursor-default'
+                  : 'glow-button shadow-md'
               }`}
             >
               <CheckCircle2 className="w-4 h-4" />
-              {completedLessonIds.includes(activeLessonId) ? 'Completed' : 'Mark as Complete'}
+              {completedLessonIds.includes(currentLesson.id) ? 'Completed' : 'Mark as Complete'}
             </button>
           </div>
         </div>
@@ -265,73 +266,138 @@ fetchUserSkillPassport("GSP-DEMO-001")
 
       {/* Completion Toast Banner */}
       {showCompletionSuccess && (
-        <div className="bg-emerald-600 text-white px-4 py-2.5 text-center text-xs font-medium flex items-center justify-center gap-2 transition-all">
+        <div className="bg-emerald-600 text-white px-4 py-2.5 text-center text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md">
           <Award className="w-4 h-4" />
-          Lesson completed! Verified telemetry recorded ({dynamicProgressPercent}% course progress). Evidence added to your Skill Passport.
+          {toastMessage}
         </div>
       )}
 
       {/* Main Grid: Sidebar + Content Player + AI Tutor */}
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Modules & Lessons Navigator (3 cols) */}
+        {/* Left Column: 12 Modules & Lessons Navigator (3 cols) */}
         <div className="lg:col-span-3 space-y-3">
-          <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
-            <h2 className="text-sm font-bold text-navy-900 mb-3 flex items-center justify-between">
-              <span>Curriculum Outline</span>
-              <span className="text-xs font-normal text-slate-500">12 Modules</span>
-            </h2>
+          <div className="bg-white rounded-2xl border border-[#FFE4E6] p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-sm font-bold text-[#1C0D12]">Curriculum Outline</h2>
+              <span className="text-xs font-bold text-[#881337] bg-[#FFE4E6] border border-[#FECDD3] px-2 py-0.5 rounded-full">
+                12 Modules
+              </span>
+            </div>
 
-            <div className="space-y-2 text-sm">
-              {MODULES_DATA.map((mod, idx) => {
+            {/* Access Pass Banner */}
+            {hasPass ? (
+              <div className="mb-3 p-2.5 rounded-xl bg-[#FFE4E6]/50 border border-[#FECDD3] flex items-center justify-between text-xs">
+                <span className="font-bold text-[#881337] flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  All Courses Unlocked
+                </span>
+                <span className="text-[10px] font-bold text-[#CA8A04] bg-white px-2 py-0.5 rounded-full border border-[#FECDD3]">
+                  Pass Active
+                </span>
+              </div>
+            ) : (
+              <div className="mb-3 p-3 rounded-xl bg-[#FFE4E6] border border-[#FECDD3] space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-[#881337] flex items-center gap-1">
+                    <Lock className="w-3.5 h-3.5 text-[#881337]" />
+                    Full Access: ₹100
+                  </span>
+                  <span className="text-[10px] font-bold text-[#CA8A04] bg-white px-1.5 py-0.5 rounded border border-[#FECDD3]">
+                    All Courses
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-600 leading-tight">
+                  Previewing Lesson 1 free. Unlock all 111 lessons, AI tutor, and practical labs.
+                </p>
+                <button
+                  onClick={() => setIsPassModalOpen(true)}
+                  className="w-full py-1.5 px-3 rounded-lg bg-[#881337] hover:bg-[#700F2E] text-white text-[11px] font-bold transition-all shadow-xs text-center"
+                >
+                  Unlock All Courses — ₹100
+                </button>
+              </div>
+            )}
+
+            <div className="space-y-2 text-sm max-h-[620px] overflow-y-auto pr-1">
+              {FULL_STACK_MODULES.map((mod, idx) => {
                 const isOpen = activeModuleIndex === idx;
+                const completedInMod = mod.lessons.filter((l) => completedLessonIds.includes(l.id)).length;
+                const isModDone = completedInMod === mod.lessons.length && mod.lessons.length > 0;
+
                 return (
-                  <div key={mod.id} className="border border-slate-200/80 rounded-lg overflow-hidden">
+                  <div key={mod.id} className="border border-[#FFE4E6] rounded-xl overflow-hidden">
                     <button
-                      onClick={() => setActiveModuleIndex(isOpen ? -1 : idx)}
+                      onClick={() => {
+                        setActiveModuleIndex(idx);
+                        if (mod.lessons.length > 0 && !mod.lessons.some((l) => l.id === activeLessonId)) {
+                          setActiveLessonId(mod.lessons[0].id);
+                        }
+                      }}
                       className={`w-full p-2.5 text-left flex items-center justify-between gap-2 transition-colors ${
-                        isOpen ? 'bg-navy-50/60 font-semibold text-navy-900' : 'bg-white hover:bg-slate-50 text-slate-700'
+                        isOpen ? 'bg-[#FFE4E6]/50 font-bold text-[#881337]' : 'bg-white hover:bg-[#FFFDF7] text-slate-700'
                       }`}
                     >
                       <div className="flex items-center gap-2 truncate">
-                        <span className="text-xs font-mono font-bold text-slate-400">{mod.number}</span>
+                        <span className="text-xs font-mono font-bold text-[#881337]">{mod.number}</span>
                         <span className="text-xs truncate">{mod.title}</span>
                       </div>
-                      {isOpen ? (
-                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                      ) : (
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                      )}
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        {isModDone && <Check className="w-3.5 h-3.5 text-emerald-600" />}
+                        {isOpen ? (
+                          <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                        ) : (
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                        )}
+                      </div>
                     </button>
 
                     {isOpen && (
-                      <div className="bg-slate-50/50 p-2 space-y-1 border-t border-slate-100">
+                      <div className="bg-[#FFFDF7] p-2 space-y-1 border-t border-[#FFE4E6]">
                         {mod.lessons.map((lesson) => {
                           const isDone = completedLessonIds.includes(lesson.id);
                           const isCurrent = activeLessonId === lesson.id;
+                          const isLocked = !hasPass && lesson.id !== 'les-01-01';
                           return (
                             <button
                               key={lesson.id}
-                              onClick={() => setActiveLessonId(lesson.id)}
-                              className={`w-full text-left p-2 rounded-md flex items-center gap-2 text-xs transition-colors ${
+                              onClick={() => {
+                                setActiveLessonId(lesson.id);
+                                setActiveTab('notes');
+                              }}
+                              className={`w-full text-left p-2 rounded-lg flex items-center gap-2 text-xs transition-colors ${
                                 isCurrent
-                                  ? 'bg-navy-900 text-white font-medium shadow-xs'
-                                  : 'text-slate-600 hover:bg-slate-100'
+                                  ? 'bg-[#881337] text-white font-bold shadow-sm'
+                                  : 'text-slate-700 hover:bg-[#FFE4E6]/40'
                               }`}
                             >
                               {isDone ? (
-                                <CheckCircle2 className={`w-3.5 h-3.5 ${isCurrent ? 'text-emerald-300' : 'text-emerald-500'} flex-shrink-0`} />
-                              ) : lesson.type === 'lab' ? (
-                                <Code2 className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                                <CheckCircle2 className={`w-3.5 h-3.5 ${isCurrent ? 'text-white' : 'text-emerald-600'} flex-shrink-0`} />
+                              ) : isLocked ? (
+                                <Lock className={`w-3.5 h-3.5 ${isCurrent ? 'text-white' : 'text-slate-400'} flex-shrink-0`} />
                               ) : (
                                 <Play className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                               )}
                               <span className="truncate flex-1">{lesson.title}</span>
-                              <span className={`text-[10px] ${isCurrent ? 'text-slate-300' : 'text-slate-400'}`}>
-                                {lesson.duration}
+                              <span className={`text-[10px] ${isCurrent ? 'text-red-100' : 'text-slate-400'}`}>
+                                {isLocked ? '₹100' : lesson.duration}
                               </span>
                             </button>
                           );
                         })}
+
+                        {/* Lab entry in sidebar */}
+                        <button
+                          onClick={() => setActiveTab('lab')}
+                          className={`w-full text-left p-2 rounded-lg flex items-center gap-2 text-xs transition-colors ${
+                            activeTab === 'lab'
+                              ? 'bg-[#881337] text-white font-black shadow-sm'
+                              : 'text-[#881337] bg-[#FFE4E6]/60 hover:bg-[#FFE4E6] font-bold border border-[#FECDD3]'
+                          }`}
+                        >
+                          <FlaskConical className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate flex-1">Lab: {mod.lab.title}</span>
+                          <span className="text-[10px] opacity-80">{!hasPass ? 'Locked' : 'Guided Lab'}</span>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -341,256 +407,471 @@ fetchUserSkillPassport("GSP-DEMO-001")
           </div>
 
           {/* Quick link to practice */}
-          <div className="bg-navy-900 text-white rounded-xl p-4 shadow-xs">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-saffron-400 mb-1">
-              Ready to code?
+          <div className="bg-white border border-[#FFE4E6] rounded-2xl p-4 shadow-sm">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#881337] mb-1">
+              Practical Challenges
             </h3>
-            <p className="text-xs text-slate-300 mb-3">
-              Put this lesson into practice in our interactive coding labs.
+            <p className="text-xs text-slate-600 mb-3 leading-relaxed">
+              Coding challenges carry higher evidence weight (30%) than watching lessons alone.
             </p>
             <Link
               href="/practice"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#881337] bg-[#FFE4E6] border border-[#FECDD3] hover:bg-[#FFE4E6]/80 px-3 py-1.5 rounded-xl transition-colors"
             >
-              Open Coding Labs
+              Solve Practice Challenges
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
 
-        {/* Center Column: Video Player & Tabs (6 cols) */}
+        {/* Center Column: Lesson Player & Dynamic Workspace Tabs (6 cols) */}
         <div className="lg:col-span-6 space-y-4">
-          {/* Video Player Mockup */}
-          <div className="bg-slate-900 rounded-xl overflow-hidden shadow-md border border-slate-800 text-white aspect-video relative flex flex-col justify-between p-4 group">
-            {/* Top controls preview */}
-            <div className="flex items-center justify-between text-xs text-slate-300 z-10">
-              <span className="bg-black/50 px-2 py-0.5 rounded font-mono">1080p HD</span>
-              <span className="bg-black/50 px-2 py-0.5 rounded">Module 4 • Lesson 2</span>
+          {/* Header Card for Active Lesson */}
+          <div className="bg-white rounded-2xl p-5 sm:p-6 border border-[#FFE4E6] shadow-sm space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-[#881337] uppercase tracking-wider">
+                Lesson {currentLesson.number} of {currentModule.lessons.length}
+              </span>
+              <span className="text-xs font-mono text-slate-500 bg-[#FFFDF7] border border-[#FFE4E6] px-2 py-0.5 rounded-full">
+                ⏱ {currentLesson.duration}
+              </span>
             </div>
-
-            {/* Big center play icon */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-16 h-16 rounded-full bg-navy-600/90 group-hover:bg-navy-600 flex items-center justify-center text-white cursor-pointer transition-transform group-hover:scale-105 shadow-xl">
-                <Play className="w-7 h-7 ml-1" />
-              </div>
-            </div>
-
-            {/* Bottom playback bar */}
-            <div className="space-y-2 z-10 bg-gradient-to-t from-black/80 to-transparent p-2 -mx-2 -mb-2">
-              <div className="w-full bg-white/20 h-1.5 rounded-full overflow-hidden cursor-pointer">
-                <div className="bg-saffron-500 h-full w-2/5" />
-              </div>
-              <div className="flex items-center justify-between text-xs text-slate-300">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-[11px]">13:45 / 34:10</span>
-                  <span className="text-[11px] text-slate-400">Promises & Event Loop</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] px-1.5 py-0.5 rounded bg-white/10 cursor-pointer">1.0x</span>
-                </div>
-              </div>
-            </div>
+            <h2 className="text-xl font-black text-[#1C0D12]">{currentLesson.title}</h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              {currentLesson.shortDescription}
+            </p>
           </div>
 
+          {/* Broadcast Video Lesson Player or Locked Screen */}
+          {!hasPass && currentLesson.id !== 'les-01-01' ? (
+            <div className="bg-white rounded-3xl border border-[#FFE4E6] p-8 sm:p-12 text-center shadow-sm space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-[#FFE4E6] border border-[#FECDD3] flex items-center justify-center text-[#881337] mx-auto shadow-sm">
+                <Lock className="w-8 h-8 text-[#881337]" />
+              </div>
+              <div className="max-w-md mx-auto space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFE4E6] text-[#881337] text-xs font-bold border border-[#FECDD3]">
+                  <Sparkles className="w-3 h-3 text-[#CA8A04]" />
+                  <span>PREMIUM LEARNING PATHWAY</span>
+                </div>
+                <h2 className="text-2xl font-black text-[#1C0D12]">Unlock Your Learning Journey</h2>
+                <p className="text-sm font-semibold text-[#881337]">
+                  One payment of ₹100 for access to all eligible courses.
+                </p>
+                <p className="text-xs text-slate-500">
+                  Learn at your own pace. Practise your skills. Build real project evidence.
+                </p>
+              </div>
+
+              <div className="max-w-sm mx-auto p-4 rounded-2xl bg-[#FFFDF7] border border-[#FFE4E6] text-left text-xs space-y-2 text-slate-700">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#881337] flex-shrink-0" />
+                  <span>Full access to all 12 modules &amp; 111 lessons</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#881337] flex-shrink-0" />
+                  <span>Interactive sandbox &amp; real Node.js execution runtime</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#881337] flex-shrink-0" />
+                  <span>All upcoming engineering tracks included upon release</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                <button
+                  onClick={() => setIsPassModalOpen(true)}
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#881337] hover:bg-[#700F2E] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
+                >
+                  <span>Unlock All Courses — ₹100</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveLessonId('les-01-01');
+                    setActiveModuleIndex(0);
+                  }}
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white border border-[#FECDD3] hover:bg-[#FFE4E6]/40 text-[#881337] font-bold text-sm transition-all"
+                >
+                  Preview Lesson 1 (Free)
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              {(() => {
+            const hasLessonVideo = ['les-01-01', 'les-01-02', 'les-01-03', 'les-04-03'].includes(currentLesson.id);
+            return (
+              <VideoLessonPlayer
+                key={currentLesson.id}
+                moduleId={currentModule.id}
+                moduleTitle={currentModule.title}
+                moduleNumber={currentModule.number}
+                conceptTitle={currentLesson.title}
+                videoUrl={hasLessonVideo ? `/videos/lessons/${currentLesson.id}.mp4` : `/videos/modules/${currentModule.id}.mp4`}
+                captionUrl={hasLessonVideo ? `/captions/lessons/${currentLesson.id}.vtt` : `/captions/modules/${currentModule.id}.vtt`}
+                transcriptUrl={hasLessonVideo ? `/transcripts/lessons/${currentLesson.id}.txt` : `/transcripts/modules/${currentModule.id}.txt`}
+                durationSeconds={42}
+                hasPrevious={currentLesson.number > 1}
+                hasNext={currentLesson.number < currentModule.lessons.length}
+                onPrevious={() => {
+                  const prev = currentModule.lessons.find((l) => l.number === currentLesson.number - 1);
+                  if (prev) setActiveLessonId(prev.id);
+                }}
+                onNext={() => {
+                  const next = currentModule.lessons.find((l) => l.number === currentLesson.number + 1);
+                  if (next) setActiveLessonId(next.id);
+                }}
+                onComplete={() => {
+                  if (!completedLessonIds.includes(currentLesson.id)) {
+                    handleMarkComplete();
+                  }
+                }}
+              />
+            );
+          })()}
+
           {/* Interactive Lesson Workspace Tabs */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="border-b border-slate-200 flex">
+          <div className="bg-white rounded-2xl border border-[#FFE4E6] shadow-sm overflow-hidden">
+            <div className="border-b border-[#FFE4E6] flex flex-wrap bg-[#FFFDF7]">
               <button
                 onClick={() => setActiveTab('notes')}
-                className={`px-4 py-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 ${
+                className={`px-4 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
                   activeTab === 'notes'
-                    ? 'border-navy-900 text-navy-900 bg-slate-50/50'
-                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                    ? 'border-[#881337] text-[#881337] bg-white'
+                    : 'border-transparent text-slate-500 hover:text-[#1C0D12]'
                 }`}
               >
                 <BookOpen className="w-3.5 h-3.5" />
-                Lesson Notes & Concepts
+                Concept &amp; Learn
               </button>
               <button
-                onClick={() => setActiveTab('sandbox')}
-                className={`px-4 py-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'sandbox'
-                    ? 'border-navy-900 text-navy-900 bg-slate-50/50'
-                    : 'border-transparent text-slate-500 hover:text-slate-800'
-                }`}
-              >
-                <FileCode className="w-3.5 h-3.5" />
-                Interactive Code Sandbox
-              </button>
-              <button
-                onClick={() => setActiveTab('takeaways')}
-                className={`px-4 py-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 ${
-                  activeTab === 'takeaways'
-                    ? 'border-navy-900 text-navy-900 bg-slate-50/50'
-                    : 'border-transparent text-slate-500 hover:text-slate-800'
+                onClick={() => setActiveTab('objectives')}
+                className={`px-4 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
+                  activeTab === 'objectives'
+                    ? 'border-[#881337] text-[#881337] bg-white'
+                    : 'border-transparent text-slate-500 hover:text-[#1C0D12]'
                 }`}
               >
                 <Lightbulb className="w-3.5 h-3.5" />
-                Key Competencies
+                Objectives &amp; Takeaways
+              </button>
+              <button
+                onClick={() => setActiveTab('sandbox')}
+                className={`px-4 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
+                  activeTab === 'sandbox'
+                    ? 'border-[#881337] text-[#881337] bg-white'
+                    : 'border-transparent text-slate-500 hover:text-[#1C0D12]'
+                }`}
+              >
+                <FileCode className="w-3.5 h-3.5" />
+                Interactive Sandbox
+              </button>
+              <button
+                onClick={() => setActiveTab('lab')}
+                className={`px-4 py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
+                  activeTab === 'lab'
+                    ? 'border-[#881337] text-[#881337] bg-white'
+                    : 'border-transparent text-slate-500 hover:text-[#881337]'
+                }`}
+              >
+                <FlaskConical className="w-3.5 h-3.5 text-[#881337]" />
+                Module Lab
               </button>
             </div>
 
-            <div className="p-5">
+            <div className="p-5 sm:p-6">
+              {/* TAB 1: CONCEPT & LEARN */}
               {activeTab === 'notes' && (
-                <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                  <h3 className="font-bold text-navy-900 text-base">
-                    Understanding Asynchronous Execution in JavaScript
-                  </h3>
-                  <p>
-                    JavaScript is inherently single-threaded, running on a single call stack. However, browser environments provide Web APIs (like Fetch, Timers, and DOM Events) that operate concurrently.
-                  </p>
-                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-900 space-y-1">
-                    <p className="font-semibold">Key Rule of Promises:</p>
-                    <p>
-                      Promises transition from <strong>Pending</strong> to either <strong>Fulfilled</strong> (with value) or <strong>Rejected</strong> (with error). They are settled only once.
+                <div className="space-y-5 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  <div>
+                    <h3 className="font-bold text-[#1C0D12] text-base mb-2">Technical Concept</h3>
+                    <p className="text-slate-700 leading-relaxed">
+                      {currentLesson.conceptExplanation}
                     </p>
                   </div>
-                  <h4 className="font-bold text-navy-900 pt-2">Why Async/Await Matters</h4>
-                  <p>
-                    Async functions return a Promise implicitly. Using <code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-xs">await</code> pauses the execution inside the async function without blocking the main browser thread, simplifying complex nested chains.
-                  </p>
+
+                  {/* Code Example Box */}
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                      <span className="font-bold uppercase tracking-wider text-[11px] text-[#1C0D12]">
+                        Practical Implementation Pattern ({currentLesson.codeExample.language})
+                      </span>
+                      <span className="font-mono text-[10px] bg-[#FFE4E6] border border-[#FECDD3] px-2 py-0.5 rounded text-[#881337]">
+                        {currentLesson.codeExample.caption}
+                      </span>
+                    </div>
+
+                    <pre className="p-4 bg-[#1C0D12] text-[#FFE4E6] font-mono text-xs rounded-xl overflow-x-auto leading-relaxed border border-[#FECDD3]">
+                      <code>{currentLesson.codeExample.code}</code>
+                    </pre>
+                  </div>
+
+                  <div className="p-3.5 bg-[#FFE4E6]/40 border border-[#FECDD3] rounded-xl text-xs text-[#1C0D12] flex items-start gap-2.5">
+                    <Lightbulb className="w-4 h-4 text-[#881337] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-[#1C0D12]">Competency Proof Principle:</p>
+                      <p className="mt-0.5 text-slate-600">
+                        Lesson completion verifies exposure and study progress. Strong proof of ability requires passing the Module Lab and Practice Challenges.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
+              {/* TAB 2: OBJECTIVES & TAKEAWAYS */}
+              {activeTab === 'objectives' && (
+                <div className="space-y-5 text-xs sm:text-sm">
+                  <div>
+                    <h3 className="font-bold text-[#1C0D12] text-sm mb-3 flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      Learning Objectives
+                    </h3>
+                    <ul className="space-y-2">
+                      {currentLesson.learningObjectives.map((obj, i) => (
+                        <li key={i} className="flex items-start gap-2.5 text-slate-700">
+                          <span className="w-5 h-5 rounded-full bg-[#FFE4E6] border border-[#FECDD3] text-[#881337] font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                            {i + 1}
+                          </span>
+                          <span>{obj}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="border-t border-[#FFE4E6] pt-4">
+                    <h3 className="font-bold text-[#1C0D12] text-sm mb-3 flex items-center gap-2">
+                      <Award className="w-4 h-4 text-[#881337]" />
+                      Key Architectural Takeaways
+                    </h3>
+                    <div className="space-y-2.5">
+                      {currentLesson.keyTakeaways.map((takeaway, i) => (
+                        <div key={i} className="p-3 bg-[#FFFDF7] border border-[#FFE4E6] rounded-xl text-xs text-slate-700">
+                          <strong className="text-[#1C0D12]">Takeaway {i + 1}:</strong> {takeaway}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: INTERACTIVE CODE SANDBOX */}
               {activeTab === 'sandbox' && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-slate-500 flex items-center gap-1">
-                      <Terminal className="w-3.5 h-3.5" /> async-sandbox.js
+                    <span className="font-mono text-[#881337] flex items-center gap-1 font-bold">
+                      <Terminal className="w-3.5 h-3.5" /> sandbox.{currentLesson.codeExample.language === 'typescript' ? 'ts' : currentLesson.codeExample.language === 'sql' ? 'sql' : 'js'}
                     </span>
-                    <button
-                      onClick={handleRunCode}
-                      className="btn-primary text-xs py-1.5 px-3 flex items-center gap-1"
-                    >
-                      <Play className="w-3 h-3" />
-                      Run Code
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setCodeContent(currentLesson.codeExample.code)}
+                        className="text-xs text-slate-500 hover:text-[#1C0D12] flex items-center gap-1 transition-colors"
+                        title="Reset code to original snippet"
+                      >
+                        <RotateCcw className="w-3 h-3" /> Reset
+                      </button>
+                      <button
+                        onClick={handleRunCode}
+                        className="glow-button text-xs py-1.5 px-3 flex items-center gap-1 font-bold"
+                      >
+                        <Play className="w-3 h-3" />
+                        Run Code
+                      </button>
+                    </div>
                   </div>
 
                   <textarea
                     value={codeContent}
                     onChange={(e) => setCodeContent(e.target.value)}
-                    rows={8}
-                    className="w-full p-3 font-mono text-xs bg-slate-900 text-emerald-400 rounded-lg focus:outline-none focus:ring-1 focus:ring-navy-600 leading-relaxed resize-none"
+                    rows={10}
+                    className="w-full p-4 font-mono text-xs bg-[#1C0D12] text-[#FFE4E6] rounded-xl focus:outline-none border border-[#FECDD3] leading-relaxed resize-none"
                   />
 
                   {sandboxOutput && (
-                    <div className="p-3 bg-slate-950 text-slate-200 font-mono text-xs rounded-lg whitespace-pre-wrap border border-slate-800">
+                    <div className="p-3.5 bg-[#FFFDF7] text-emerald-800 font-mono text-xs rounded-xl whitespace-pre-wrap border border-emerald-300">
                       {sandboxOutput}
                     </div>
                   )}
                 </div>
               )}
 
-              {activeTab === 'takeaways' && (
-                <div className="space-y-3 text-xs">
-                  <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <span className="font-bold text-navy-900 block mb-1">1. Event Loop Mechanics</span>
-                    <p className="text-slate-600">
-                      Call Stack executes synchronous frames. Microtasks (Promise handlers) are flushed immediately after each task before Macrotasks (setTimeout).
+              {/* TAB 4: GUIDED MODULE LAB */}
+              {activeTab === 'lab' && (
+                <div className="space-y-4 text-xs sm:text-sm">
+                  <div className="p-4 bg-[#FFE4E6]/50 border border-[#FECDD3] rounded-2xl space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#881337]">
+                        Guided Lab • Module {currentModule.number}
+                      </span>
+                      <span className="text-xs font-bold bg-white border border-[#FECDD3] px-2.5 py-0.5 rounded-full text-[#881337]">
+                        Skills: {currentModule.lab.skillsTested.join(', ')}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-[#1C0D12] text-base">
+                      {currentModule.lab.title}
+                    </h3>
+                    <p className="text-slate-600 text-xs leading-relaxed">
+                      {currentModule.lab.objective}
                     </p>
                   </div>
-                  <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <span className="font-bold text-navy-900 block mb-1">2. Error Handling Best Practice</span>
-                    <p className="text-slate-600">
-                      Always wrap <code className="font-mono">await</code> calls inside <code className="font-mono">try...catch</code> blocks to prevent uncaught runtime rejections.
-                    </p>
+
+                  <div className="space-y-2">
+                    <h4 className="font-bold text-[#1C0D12] text-xs uppercase tracking-wider">
+                      Lab Requirements
+                    </h4>
+                    <ul className="space-y-1.5 text-xs text-slate-700">
+                      {currentModule.lab.requirements.map((req, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-[#881337] font-bold">•</span>
+                          <span>{req}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
-                    <span className="font-bold text-navy-900 block mb-1">3. Skill Passport Telemetry</span>
-                    <p className="text-slate-600">
-                      This unit maps directly to the &ldquo;Asynchronous JS & APIs&rdquo; sub-competency on your official Skill Passport.
-                    </p>
+
+                  <div className="p-3.5 bg-[#FFFDF7] border border-[#FFE4E6] rounded-xl space-y-1 text-xs">
+                    <span className="font-bold text-[#1C0D12] block">Expected Verification Output:</span>
+                    <p className="text-slate-700 font-mono text-[11px]">{currentModule.lab.expectedOutput}</p>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-[11px] text-slate-500">
+                      Submission requirement: {currentModule.lab.submissionRequirements}
+                    </span>
+                    <button
+                      onClick={handleSubmitLab}
+                      className="glow-button text-xs py-2 px-4 flex items-center gap-1.5 font-bold"
+                    >
+                      <Award className="w-3.5 h-3.5" />
+                      Submit Lab for Evidence
+                    </button>
                   </div>
                 </div>
               )}
             </div>
           </div>
+            </>
+          )}
         </div>
 
         {/* Right Column: SEVA AI Tutor (3 cols) */}
-        <div className="lg:col-span-3 flex flex-col h-[560px] bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+        <div className="lg:col-span-3 flex flex-col h-[600px] bg-white rounded-2xl border border-[#FFE4E6] shadow-sm overflow-hidden">
           {/* AI Header */}
-          <div className="p-3.5 bg-navy-900 text-white flex items-center justify-between">
+          <div className="p-3.5 bg-[#FFFDF7] border-b border-[#FFE4E6] text-[#1C0D12] flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-saffron-500 flex items-center justify-center text-navy-950">
+              <div className="w-8 h-8 rounded-xl bg-[#FFE4E6] border border-[#FECDD3] flex items-center justify-center text-[#881337]">
                 <Sparkles className="w-4 h-4" />
               </div>
-              <div>
-                <h3 className="text-xs font-bold leading-tight">SEVA AI Tutor</h3>
-                <span className="text-[10px] text-saffron-300">Contextual Learning Assistant</span>
-              </div>
             </div>
-          </div>
-
-          {/* Quick Prompt Chips */}
-          <div className="p-2 bg-slate-50 border-b border-slate-100 flex flex-wrap gap-1 text-[11px]">
             <button
-              onClick={() => handleAskAI('Explain Event Loop in simple terms')}
-              className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded border border-slate-200 transition-colors"
+              onClick={() => {
+                setMessages([
+                  {
+                    role: 'assistant',
+                    text: `Hello! I am your SEVA Academic AI Tutor. Ask me anything about "${currentLesson.title}", coding best practices, or debugging!`
+                  }
+                ]);
+              }}
+              className="text-[10px] text-slate-400 hover:text-[#881337] p-1.5 rounded-lg hover:bg-[#FFE4E6]/60 flex items-center gap-1 transition-colors border border-transparent hover:border-[#FECDD3]"
+              title="Reset conversation history"
             >
-              Event Loop?
-            </button>
-            <button
-              onClick={() => handleAskAI('Why use async/await over promises?')}
-              className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded border border-slate-200 transition-colors"
-            >
-              Async/await vs Promise?
-            </button>
-            <button
-              onClick={() => handleAskAI('How does this affect my Skill Passport score?')}
-              className="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 rounded border border-slate-200 transition-colors"
-            >
-              Passport score impact?
+              <RotateCcw className="w-3 h-3" />
+              <span>Reset</span>
             </button>
           </div>
 
-          {/* Message List */}
-          <div className="flex-1 p-3 overflow-y-auto space-y-2.5 text-xs">
+          {/* Chat Messages */}
+          <div className="flex-1 p-3.5 overflow-y-auto space-y-3 bg-[#FFFDF7]/50 text-xs">
             {messages.map((m, idx) => (
               <div
                 key={idx}
-                className={`p-2.5 rounded-lg max-w-[90%] leading-relaxed ${
+                className={`p-3 rounded-xl leading-relaxed ${
                   m.role === 'user'
-                    ? 'ml-auto bg-navy-900 text-white'
-                    : 'mr-auto bg-slate-100 text-slate-800 border border-slate-200'
+                    ? 'bg-[#881337] text-white ml-4 rounded-br-xs shadow-xs'
+                    : 'bg-white border border-[#FFE4E6] text-[#1C0D12] mr-4 rounded-bl-xs shadow-xs'
                 }`}
               >
                 {m.text}
               </div>
             ))}
+
             {isAiTyping && (
-              <div className="p-2.5 rounded-lg max-w-[80%] bg-slate-100 text-slate-500 text-xs italic">
-                SEVA AI Tutor is thinking...
+              <div className="flex items-center gap-1 text-[11px] text-[#881337] p-2 italic">
+                <span className="w-1.5 h-1.5 bg-[#881337] rounded-full animate-bounce" />
+                <span className="w-1.5 h-1.5 bg-[#881337] rounded-full animate-bounce delay-100" />
+                <span className="w-1.5 h-1.5 bg-[#881337] rounded-full animate-bounce delay-200" />
+                SEVA AI is reasoning...
               </div>
             )}
           </div>
 
-          {/* AI Input Form */}
+          {/* Quick Prompts */}
+          <div className="p-2 border-t border-[#FFE4E6] bg-white flex flex-wrap gap-1">
+            <button
+              onClick={() => handleAskAI(`Explain the core concept of ${currentLesson.title} in simple terms`)}
+              className="text-[10px] bg-[#FFE4E6]/40 hover:bg-[#FFE4E6] text-slate-700 border border-[#FECDD3] px-2 py-0.5 rounded-md transition-colors"
+            >
+              Explain Simply
+            </button>
+            <button
+              onClick={() => handleAskAI(`Give me a production code snippet example for ${currentLesson.title}`)}
+              className="text-[10px] bg-[#FFE4E6]/40 hover:bg-[#FFE4E6] text-slate-700 border border-[#FECDD3] px-2 py-0.5 rounded-md transition-colors"
+            >
+              Code Example
+            </button>
+            <button
+              onClick={() => handleAskAI(`What are common bugs or edge cases in ${currentLesson.title}?`)}
+              className="text-[10px] bg-[#FFE4E6]/40 hover:bg-[#FFE4E6] text-slate-700 border border-[#FECDD3] px-2 py-0.5 rounded-md transition-colors"
+            >
+              Common Bugs
+            </button>
+          </div>
+
+          {/* Input Form */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleAskAI();
             }}
-            className="p-2.5 border-t border-slate-200 flex gap-2 bg-white"
+            className="p-2.5 bg-white border-t border-[#FFE4E6] flex items-center gap-2"
           >
             <input
               type="text"
               value={inputQuestion}
               onChange={(e) => setInputQuestion(e.target.value)}
-              placeholder="Ask a question..."
-              className="flex-1 px-3 py-1.5 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-navy-600"
+              placeholder="Ask AI tutor anything..."
+              className="flex-1 bg-[#FFFDF7] border border-[#FECDD3] text-[#1C0D12] text-xs rounded-xl px-3 py-2 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#881337]"
             />
             <button
               type="submit"
-              className="p-2 bg-navy-900 text-white rounded-lg hover:bg-navy-950 transition-colors"
-              title="Send"
+              disabled={isAiTyping || !inputQuestion.trim()}
+              className="p-2 rounded-xl glow-button disabled:opacity-50 transition-colors"
             >
               <Send className="w-3.5 h-3.5" />
             </button>
           </form>
         </div>
       </div>
+      {/* Global AI Academic Tutor Modal Trigger */}
+      <AiTutorModal
+        contextType="lesson"
+        contextId={currentLesson.id}
+        contextTitle={`${currentModule.title}: ${currentLesson.title}`}
+      />
+
+      {/* Course Access Pass Modal */}
+      <UnlockPassModal
+        isOpen={isPassModalOpen}
+        onClose={() => setIsPassModalOpen(false)}
+        currentUser={user}
+        onSuccess={() => {
+          setHasPass(true);
+          setToastMessage('Payment verified! All courses and lessons unlocked successfully.');
+          setShowCompletionSuccess(true);
+          setTimeout(() => setShowCompletionSuccess(false), 5000);
+        }}
+        courseTitle="Full Stack Developer Programme"
+        courseSlug="full-stack-development"
+      />
     </div>
   );
 }

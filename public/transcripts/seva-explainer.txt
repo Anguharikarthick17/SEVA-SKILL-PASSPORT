@@ -1,0 +1,23 @@
+SEVA SKILL PASSPORT — 30-SECOND EXPLAINER NARRATION TRANSCRIPT
+
+[00:00 - 00:04 | The Challenge]
+"Learning a skill is just the beginning."
+
+[00:04 - 00:09 | Learn]
+"SEVA Skill Passport helps you take the next step. Learn through structured lessons."
+
+[00:09 - 00:15 | Practise & Build]
+"Practise with hands-on labs. Build real projects."
+
+[00:15 - 00:22 | Assess & Verify]
+"Test your skills through assessments. Then bring your demonstrated abilities together in a shareable Skill Passport, backed by evidence."
+
+[00:22 - 00:30 | Brand Reveal]
+"SEVA Skill Passport. Learn Skills. Build Ability. Prove What You Can Do."
+
+Production Specifications:
+- Resolution: 1920x1080 (16:9 Full HD)
+- Frame Rate: 30 fps
+- Master Duration: 30.00 seconds
+- Audio: Broadcast 48kHz Stereo AAC, -16 LUFS normalized dialogue, -24 LUFS ambient music
+- Visual Style: Lemon Chiffon (#FFFACD), Milan Red (#B81104), Cream (#FFFDF0), Espresso (#1A0C08)

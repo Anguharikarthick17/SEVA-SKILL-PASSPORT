@@ -1,0 +1,14 @@
+# Client vs Server
+
+**Module**: Module 01: Web Fundamentals
+**Competency**: Web Fundamentals
+
+## Spoken Narration Transcript
+
+1. Welcome to Client vs Server, part of Module 01: Web Fundamentals.
+
+2. The client (browser, mobile app) executes in an untrusted user environment focused on presentation, user input capture, and immediate visual feedback. The server operates in a secure environment responsible for authorization, database persistence, transaction integrity, and confidential business log
+
+3. In this lesson, you will master Distinguish untrusted client environments from trusted server environments, Analyze state management tradeoffs across client and server boundaries, Prevent security vulnerabilities caused by relying solely on client validation.
+
+4. Review the key takeaways and complete the hands-on practice lab to record your evidence.

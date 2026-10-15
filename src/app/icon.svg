@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <!-- Warm Cream Rounded Background -->
+  <rect width="200" height="200" rx="44" fill="#FFFDF7" stroke="#881337" stroke-width="4" stroke-opacity="0.15"/>
+  
+  <!-- Bottom-Left Antique Gold Triangle -->
+  <polygon points="35,145 35,95 85,145" fill="#CA8A04"/>
+  
+  <!-- Top-Right Soft Rose Triangle -->
+  <polygon points="165,55 165,105 115,55" fill="#F4A7B9"/>
+  
+  <!-- Official Burgundy S Shape Ribbon -->
+  <path d="M72 45 C48 45 35 58 35 82 L35 98 C35 112 44 122 58 132 L112 168 C124 176 132 185 132 195 L132 205 C132 218 120 228 102 228 C82 228 68 216 66 198 L36 198 C38 232 64 255 102 255 C138 255 164 232 164 198 L164 180 C164 165 154 154 138 142 L88 106 C78 98 70 90 70 80 L70 72 C70 60 80 52 96 52 C114 52 126 62 128 78 L158 78 C156 48 132 28 96 28 Z" fill="#881337" transform="scale(0.68) translate(14, 14)"/>
+</svg>

@@ -1,0 +1,38 @@
+# Module 03: JavaScript Fundamentals
+**Concept Focus**: Execution Context, Lexical Scope & Closure Architecture
+**Total Duration**: ~40 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 03: JavaScript Fundamentals
+*The JavaScript Execution Model & Memory Allocation*
+
+> "In Module 3, we dive into JavaScript execution contexts, lexical scope, variable hoisting, and how closures preserve access to parent environments."
+
+### Part 2: Code Example: Encapsulated Counter with Closures
+*Private State Preservation*
+
+> "In this example, the inner functions maintain a live reference to the private count variable. Outside code cannot mutate count directly, demonstrating encapsulation."
+
+```javascript
+function createTelemetryTracker(initialCount = 0) {
+  let count = initialCount;
+  return {
+    increment: () => ++count,
+    getCount: () => count,
+  };
+}
+const tracker = createTelemetryTracker(10);
+tracker.increment(); // returns 11
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Asynchronous Variable Mutation in Loops*
+
+> "Using var in asynchronous loops binds a single variable across all iterations. Always declare loop counters with block-scoped let to prevent subtle race conditions."
+
+### Part 4: Module 03 Summary & Evidence Path
+*Algorithmic Competency Verification*
+
+> "Your Skill Passport evaluates JavaScript ability through automated test execution. Write pure, predictable functions to qualify your score."

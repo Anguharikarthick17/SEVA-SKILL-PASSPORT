@@ -1,0 +1,139 @@
+1
+00:00:00,500 --> 00:00:05,799
+Learning is fundamental.
+But how do we prove what we can actually build and do?
+
+2
+00:00:06,200 --> 00:00:11,199
+Welcome to SEVA Skill Passport.
+Proof of Course → Proof of Ability.
+
+3
+00:00:11,500 --> 00:00:15,000
+Powered by Team OG — Opportunity & Growth
+
+4
+00:00:16,000 --> 00:00:22,500
+Every year, millions of students complete online courses
+and receive completion certificates.
+
+5
+00:00:23,000 --> 00:00:29,800
+But a certificate only confirms attendance.
+It cannot show architectural decisions made in code,
+
+6
+00:00:30,199 --> 00:00:35,000
+the edge cases tested, or practical problem-solving
+demonstrated during real development.
+
+7
+00:00:35,500 --> 00:00:39,200
+There is a missing link between passive study
+and verified competency.
+
+8
+00:00:40,500 --> 00:00:47,000
+Our team explored the challenges of demonstrating practical skills
+beyond course-completion certificates.
+
+9
+00:00:47,500 --> 00:00:55,000
+Through our case-study investigation and consultation,
+we sought perspectives and suggestions to better understand the problem.
+
+10
+00:00:55,500 --> 00:01:01,500
+This informed our goal: to connect learning
+with clearer evidence of practical ability.
+
+11
+00:01:04,500 --> 00:01:10,000
+Introducing SEVA Skill Passport:
+a unified digital learning and capability verification framework.
+
+12
+00:01:10,500 --> 00:01:15,799
+Moving learners from basic course completion
+to tangible, cryptographic skill evidence
+
+13
+00:01:16,200 --> 00:01:19,500
+that can be independently inspected by educators and hiring teams.
+
+14
+00:01:20,500 --> 00:01:25,000
+Here is our live working prototype, running locally.
+Beginning with our full-screen branded welcome intro,
+
+15
+00:01:25,500 --> 00:01:30,000
+learners explore structured tracks like Full Stack Development.
+Our zero-friction onboarding includes one-click demo access.
+
+16
+00:01:30,500 --> 00:01:35,500
+Inside the dashboard, student progress is tracked
+with active lesson milestones.
+
+17
+00:01:36,000 --> 00:01:41,500
+Every challenge and code submission is linked to verifiable cryptographic proof,
+
+18
+00:01:42,000 --> 00:01:46,500
+providing an authentic evidence portfolio.
+
+19
+00:01:47,500 --> 00:01:53,000
+Existing platforms—from traditional learning management systems
+to portfolio websites—solve individual pieces of the puzzle.
+
+20
+00:01:53,500 --> 00:02:01,000
+SEVA Skill Passport connects them into a continuous journey:
+Course Learning → Practical Sandboxes → Project Assessments → Skill Passport.
+
+21
+00:02:01,500 --> 00:02:09,500
+A unified continuum from curriculum to cryptographic proof.
+
+22
+00:02:10,500 --> 00:02:16,500
+Built on modern production technologies: Next.js App Router,
+React, and TypeScript for responsive interfaces,
+
+23
+00:02:17,000 --> 00:02:22,000
+styled with Tailwind CSS, backed by Supabase and PostgreSQL,
+
+24
+00:02:22,500 --> 00:02:27,000
+and secured with SHA-256 cryptographic evidence hashing.
+
+25
+00:02:27,500 --> 00:02:31,000
+Developed iteratively as a working prototype with modular services.
+
+26
+00:02:32,000 --> 00:02:37,000
+Our intended benefits focus on transparent skill representation,
+empowering learners and simplifying evaluation.
+
+27
+00:02:37,500 --> 00:02:44,000
+Our roadmap advances from prototype validation to student testing,
+richer assessment rubrics, and institutional integration.
+
+28
+00:02:44,500 --> 00:02:50,000
+Driven by Team OG — Opportunity & Growth.
+
+29
+00:02:51,000 --> 00:02:55,500
+SEVA Skill Passport.
+Proof of Course → Proof of Ability.
+
+30
+00:02:56,000 --> 00:02:58,800
+Building a clearer bridge between learning and demonstrated ability.

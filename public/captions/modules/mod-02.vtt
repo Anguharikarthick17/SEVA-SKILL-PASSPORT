@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: HTML & CSS
+
+1
+00:00:00.000 --> 00:00:11.355
+Module 2 covers semantic markup and modern CSS layouts. Semantic HTML establishes an accessible document tree that works seamlessly across assistive technology.
+
+2
+00:00:11.355 --> 00:00:22.829
+Here we define a responsive dashboard layout using CSS Grid. With repeat, auto fit, and minmax, the layout adapts fluidly without requiring hardcoded media queries.
+
+3
+00:00:22.829 --> 00:00:31.866
+Avoid replacing buttons with clickable divs. Doing so strips away keyboard navigation, focus management, and accessibility roles.
+
+4
+00:00:31.866 --> 00:00:40.997
+Ensure your components meet WCAG double-A standards before submitting your practice lab. This completes the core requirements for Module 2.

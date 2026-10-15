@@ -1,0 +1,35 @@
+# Module 01: Web Fundamentals
+**Concept Focus**: HTTP Request Lifecycle & Browser Parsing
+**Total Duration**: ~40 seconds
+**Audio Narration**: Crystal Speech Synthesizer
+
+## Complete Spoken Transcript
+
+### Part 1: Module 01: Web Fundamentals
+*The Anatomy of an HTTP Transaction*
+
+> "Welcome to SEVA Skill Passport. In Module 1, we deconstruct the HTTP transaction lifecycle, from DNS resolution and TLS handshakes to DOM construction."
+
+### Part 2: Live Example: HTTP Request Header Inspection
+*Production Header Negotiation*
+
+> "Observe the structure of a standard HTTP GET request. The client specifies required headers such as host, authorization, and caching instructions."
+
+```javascript
+GET /api/v1/passport/telemetry HTTP/1.1
+Host: api.seva.edu
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X)
+Accept: application/json
+Cache-Control: max-age=3600, must-revalidate
+Authorization: Bearer eyJhbGciOiJIUzI1Ni...
+```
+
+### Part 3: Common Mistake & Anti-Pattern
+*Render-Blocking Resource Loading*
+
+> "A common mistake in web architecture is loading external scripts synchronously in the document head. This blocks DOM tree construction. Always use defer or async."
+
+### Part 4: Module 01 Summary & Telemetry Check
+*Skill Passport Evidence Criteria*
+
+> "To qualify this module in your Skill Passport, complete Lab 1 by parsing live network requests and logging verified telemetry in the terminal."

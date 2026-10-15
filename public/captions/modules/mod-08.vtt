@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: Databases
+
+1
+00:00:00.000 --> 00:00:11.835
+In Module 8, we explore database design and PostgreSQL engineering. We study normalization, B-Tree indexes, transaction isolation levels, and ACID guarantees.
+
+2
+00:00:11.835 --> 00:00:22.579
+Atomic database transactions guarantee that related operations succeed together. If any statement fails, the transaction rolls back, preserving database integrity.
+
+3
+00:00:22.579 --> 00:00:32.196
+A common pitfall is forgetting to index foreign keys. Without indexes, join queries trigger full table scans that degrade performance as data scales.
+
+4
+00:00:32.196 --> 00:00:41.614
+Demonstrate relational schema design, query optimization, and transaction safety in our practical labs to qualify your database competency.

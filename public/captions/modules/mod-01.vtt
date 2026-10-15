@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: Web Fundamentals
+
+1
+00:00:00.000 --> 00:00:11.445
+Welcome to SEVA Skill Passport. In Module 1, we deconstruct the HTTP transaction lifecycle, from DNS resolution and TLS handshakes to DOM construction.
+
+2
+00:00:11.445 --> 00:00:21.539
+Observe the structure of a standard HTTP GET request. The client specifies required headers such as host, authorization, and caching instructions.
+
+3
+00:00:21.539 --> 00:00:31.609
+A common mistake in web architecture is loading external scripts synchronously in the document head. This blocks DOM tree construction. Always use defer or async.
+
+4
+00:00:31.609 --> 00:00:40.487
+To qualify this module in your Skill Passport, complete Lab 1 by parsing live network requests and logging verified telemetry in the terminal.

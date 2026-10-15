@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: Node.js
+
+1
+00:00:00.000 --> 00:00:11.273
+Module 6 focuses on Node.js server architecture. We examine libuv thread pools, non-blocking I/O, event emitters, and graceful process lifecycle management.
+
+2
+00:00:11.273 --> 00:00:20.887
+Notice how pipeline streams data directly from source to destination with automatic backpressure management, preventing out-of-memory errors on large payloads.
+
+3
+00:00:20.887 --> 00:00:30.105
+Synchronous CPU-intensive work blocks the single-threaded event loop, stalling all concurrent users. Offload heavy processing to worker threads.
+
+4
+00:00:30.105 --> 00:00:38.704
+Complete the stream processing lab to demonstrate non-blocking server architecture and record verified Node.js competency in your passport.

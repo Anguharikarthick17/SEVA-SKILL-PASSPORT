@@ -1,0 +1,19 @@
+WEBVTT
+
+NOTE Module: Testing
+
+1
+00:00:00.000 --> 00:00:11.053
+Module 11 covers testing and automated quality assurance. Learn to build resilient software using test-driven development, integration tests, and coverage analysis.
+
+2
+00:00:11.053 --> 00:00:20.242
+This automated test verifies that the scoring engine properly applies penalties while keeping scores within valid bounds, protecting system integrity.
+
+3
+00:00:20.242 --> 00:00:30.931
+Testing internal implementation details makes test suites fragile. Focus on public inputs, outputs, and behaviors so you can refactor code with confidence.
+
+4
+00:00:30.931 --> 00:00:39.716
+Testing is the cornerstone of verified capability. Execute all test suites to confirm that system invariants and evidence engines remain green.
