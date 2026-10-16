@@ -145,7 +145,18 @@ export default function LearningPage() {
           ...prev,
           {
             role: 'assistant',
-            text: `⚠️ AI Provider Unconfigured: ${data.message}\n\nAdd GEMINI_API_KEY="your-key" to .env.local to enable live AI responses.`
+            text: `⚠️ **AI Provider Setup Required**:\n${data.message}\n\nTo enable live AI responses, configure \`GEMINI_API_KEY\` in Vercel Project Settings → Environment Variables and redeploy.`
+          }
+        ]);
+        return;
+      }
+
+      if (!data.success && data.error === 'INVALID_API_CREDENTIALS') {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            text: `⚠️ **AI Provider Authentication Error**:\n${data.message}`
           }
         ]);
         return;

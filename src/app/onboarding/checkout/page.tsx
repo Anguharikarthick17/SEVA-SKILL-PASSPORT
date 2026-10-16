@@ -200,8 +200,8 @@ function CheckoutContent() {
             <div className="p-4 rounded-2xl bg-[#FFFDF7] border border-[#881337]/15 space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-[#1C0D12]">Individual Course Access</h3>
-                  <p className="text-[11px] text-[#1C0D12]/60">Full lifetime access to {course.title}. Additional courses require a separate ₹100 enrollment.</p>
+                  <h3 className="text-sm font-bold text-[#1C0D12]">All-Courses Access Pass</h3>
+                  <p className="text-[11px] text-[#1C0D12]/60">Full lifetime access to all engineering pathways including {course.title}.</p>
                 </div>
                 <div className="text-right">
                   <span className="text-lg font-black text-[#881337] font-mono">₹100</span>
@@ -253,7 +253,7 @@ function CheckoutContent() {
 
               <div className="space-y-2.5 text-xs">
                 <div className="flex justify-between text-[#1C0D12]/75">
-                  <span>Course Access (Standard Price)</span>
+                  <span>Platform Access (Standard Price)</span>
                   <span className="font-mono line-through">₹4,999</span>
                 </div>
                 <div className="flex justify-between text-emerald-700 font-semibold">
@@ -261,7 +261,7 @@ function CheckoutContent() {
                   <span className="font-mono">-₹4,899</span>
                 </div>
                 <div className="flex justify-between text-[#1C0D12]/75">
-                  <span>Individual Course Enrollment</span>
+                  <span>All-Courses Access Pass</span>
                   <span className="font-mono">₹100</span>
                 </div>
                 <div className="pt-3 border-t border-[#881337]/10 flex justify-between items-baseline font-black">

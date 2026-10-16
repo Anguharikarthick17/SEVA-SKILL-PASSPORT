@@ -1,12 +1,10 @@
 // ==============================================================================
-// SEVA SKILL PASSPORT — INDIVIDUAL COURSE PRICING & ENTITLEMENT ENGINE
+// SEVA SKILL PASSPORT — ALL-COURSES ACCESS PASS & ENTITLEMENT ENGINE
 // Business Rules:
-// 1. Every available course costs ₹100 individually.
-// 2. One ₹100 payment grants access to one specific course only.
-// 3. Each additional course requires another separate ₹100 purchase.
-// 4. There is NO All-Courses Pass.
-// 5. Server-side payment order generation, cryptographic signature verification,
-//    idempotent webhook handling, and server-controlled course entitlement access.
+// 1. One-time ₹100 payment grants access to all courses across SEVA Skill Passport.
+// 2. Server-enforced amount: strictly ₹100 INR (10,000 paise).
+// 3. Cryptographic HMAC-SHA256 signature verification and idempotent webhook handling.
+// 4. Server-controlled access enforcement across all protected learning resources.
 // ==============================================================================
 
 import crypto from 'crypto';
@@ -76,26 +74,31 @@ export class PaymentService {
   }
 
   /**
-   * Checks whether the user holds active access for a specific course.
-   * Access to Course A NEVER grants access to Course B.
+   * Checks whether the user holds active course access.
+   * In accordance with the ₹100 pricing rule, an active ₹100 all_courses_pass
+   * grants access to all available courses across the platform.
    */
   static async hasCourseAccess(userId: string, courseId: string = 'full-stack-development'): Promise<boolean> {
-    if (!userId || !courseId) return false;
+    if (!userId) return false;
 
     // 1. Check local/memory storage
     const entitlements = getLocal<UserEntitlementRecord[]>(KEY_ENTITLEMENTS, []);
     const localActive = entitlements.some(
       (e) =>
         e.userId === userId &&
-        (e.courseId === courseId || e.metadata?.courseId === courseId) &&
-        e.status === 'active'
+        e.status === 'active' &&
+        (e.entitlementType === 'all_courses_pass' ||
+          e.courseId === 'all_courses' ||
+          e.metadata?.allCoursesAccess === true ||
+          e.courseId === courseId ||
+          e.metadata?.courseId === courseId)
     );
     if (localActive) return true;
 
     // Check enrollments table directly
     const enrollments = getLocal<any[]>(`${STORAGE_PREFIX}enrollments`, []);
     const localEnrolled = enrollments.some(
-      (e) => e.userId === userId && e.courseId === courseId && e.status === 'active'
+      (e) => e.userId === userId && (e.courseId === courseId || e.courseId === 'all_courses') && e.status === 'active'
     );
     if (localEnrolled) return true;
 
@@ -105,13 +108,18 @@ export class PaymentService {
       if (serverClient) {
         const { data: entData, error: entError } = await (serverClient as any)
           .from('user_entitlements')
-          .select('id, status, course_id, metadata')
+          .select('id, status, course_id, entitlement_type, metadata')
           .eq('user_id', userId)
           .eq('status', 'active');
 
         if (entData && !entError && entData.length > 0) {
           const match = entData.some(
-            (e: any) => e.course_id === courseId || e.metadata?.courseId === courseId
+            (e: any) =>
+              e.entitlement_type === 'all_courses_pass' ||
+              e.course_id === 'all_courses' ||
+              e.metadata?.allCoursesAccess === true ||
+              e.course_id === courseId ||
+              e.metadata?.courseId === courseId
           );
           if (match) return true;
         }
@@ -218,7 +226,8 @@ export class PaymentService {
               userName,
               courseId: course.id,
               courseTitle: course.title,
-              entitlement: 'course_access',
+              entitlement: 'all_courses_pass',
+              allCoursesAccess: true,
             },
           }),
         });
@@ -245,7 +254,7 @@ export class PaymentService {
       }
     }
 
-    // 3. Persist payment order record specifically for this course
+    // 3. Persist payment order record for all courses pass
     const orderRecord: PaymentOrderRecord = {
       id: orderId,
       userId,
@@ -255,14 +264,15 @@ export class PaymentService {
       status: 'created',
       provider: configured ? 'razorpay' : 'manual',
       providerOrderId,
-      entitlementType: 'course_access',
+      entitlementType: 'all_courses_pass',
       metadata: {
         userEmail,
         userName,
         courseId: course.id,
         courseTitle: course.title,
         priceInr: 100,
-        policy: `Individual enrollment for ${course.title}. Each additional course requires a separate ₹100 purchase.`,
+        allCoursesAccess: true,
+        policy: 'One-time ₹100 payment for access to all courses across SEVA Skill Passport.',
       },
       createdAt: new Date().toISOString(),
     };
@@ -397,8 +407,12 @@ export class PaymentService {
     const existing = entitlements.find(
       (e) =>
         e.userId === userId &&
-        (e.courseId === resolvedCourseId || e.metadata?.courseId === resolvedCourseId) &&
-        e.status === 'active'
+        e.status === 'active' &&
+        (e.entitlementType === 'all_courses_pass' ||
+          e.courseId === 'all_courses' ||
+          e.metadata?.allCoursesAccess === true ||
+          e.courseId === resolvedCourseId ||
+          e.metadata?.courseId === resolvedCourseId)
     );
 
     if (existing) {
@@ -410,16 +424,17 @@ export class PaymentService {
       id: `ent-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
       userId,
       courseId: resolvedCourseId,
-      entitlementType: 'course_access',
+      entitlementType: 'all_courses_pass',
       status: 'active',
       grantedAt: now,
       orderId,
       metadata: {
         pricePaidInr: 100,
         courseId: resolvedCourseId,
+        allCoursesAccess: true,
         paymentId,
         paymentSignature: signature,
-        accessPolicy: `One-time ₹100 individual course purchase for ${resolvedCourseId}. Additional courses require a separate ₹100 purchase.`,
+        accessPolicy: 'One-time ₹100 payment for access to all courses across SEVA Skill Passport.',
       },
     };
 
@@ -437,7 +452,7 @@ export class PaymentService {
       setLocal(KEY_PAYMENTS, orders);
     }
 
-    // Enroll learner ONLY in the purchased course with 0% initial progress
+    // Enroll learner in primary course with 0% initial progress
     try {
       const enrollments = getLocal<any[]>(`${STORAGE_PREFIX}enrollments`, []);
       const existingEnr = enrollments.find(
@@ -467,7 +482,7 @@ export class PaymentService {
           {
             user_id: newEntitlement.userId,
             course_id: resolvedCourseId,
-            entitlement_type: 'course_access',
+            entitlement_type: 'all_courses_pass',
             status: newEntitlement.status,
             granted_at: newEntitlement.grantedAt,
             order_id: newEntitlement.orderId,
@@ -551,7 +566,7 @@ export class PaymentService {
     const now = new Date().toISOString();
     const demoOrderId = `DEMO-ORD-${Date.now()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
-    // 1. Create a clearly identified demo payment order for this specific course
+    // 1. Create a clearly identified demo payment order for all courses access
     const demoOrder: PaymentOrderRecord = {
       id: demoOrderId,
       userId,
@@ -563,14 +578,15 @@ export class PaymentService {
       providerOrderId: demoOrderId,
       providerPaymentId: `demo_pay_${Date.now()}`,
       providerSignature: `demo_sig_${Date.now()}`,
-      entitlementType: 'course_access',
+      entitlementType: 'all_courses_pass',
       metadata: {
         isDemo: true,
         accessType: 'demo',
         courseId: course.id,
         courseTitle: course.title,
         priceInr: 100,
-        demoNote: 'Demo mode learning access — no real payment collected',
+        allCoursesAccess: true,
+        demoNote: 'Demo mode learning access to all courses — no real payment collected',
       },
       createdAt: now,
       verifiedAt: now,
@@ -580,13 +596,17 @@ export class PaymentService {
     orders.push(demoOrder);
     setLocal(KEY_PAYMENTS, orders);
 
-    // 2. Create or update entitlement record clearly identified as Demo Access for this course
+    // 2. Create or update entitlement record clearly identified as Demo Access for all courses
     const entitlements = getLocal<UserEntitlementRecord[]>(KEY_ENTITLEMENTS, []);
     let entitlement = entitlements.find(
       (e) =>
         e.userId === userId &&
-        (e.courseId === course.id || e.metadata?.courseId === course.id) &&
-        e.status === 'active'
+        e.status === 'active' &&
+        (e.entitlementType === 'all_courses_pass' ||
+          e.courseId === 'all_courses' ||
+          e.metadata?.allCoursesAccess === true ||
+          e.courseId === course.id ||
+          e.metadata?.courseId === course.id)
     );
 
     if (!entitlement) {
@@ -594,17 +614,18 @@ export class PaymentService {
         id: `ent-demo-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
         userId,
         courseId: course.id,
-        entitlementType: 'course_access',
+        entitlementType: 'all_courses_pass',
         status: 'active',
         grantedAt: now,
         orderId: demoOrderId,
         metadata: {
           isDemo: true,
           accessType: 'demo',
+          allCoursesAccess: true,
           pricePaidInr: 100,
           courseId: course.id,
           courseTitle: course.title,
-          accessPolicy: `Demo Mode ₹100 Access for ${course.title}. No real payment collected. Additional courses require separate enrollment.`,
+          accessPolicy: 'Demo Mode ₹100 Access for all courses. No real payment collected.',
         },
       };
       entitlements.push(entitlement);
@@ -657,7 +678,7 @@ export class PaymentService {
           provider_order_id: demoOrderId,
           provider_payment_id: demoOrder.providerPaymentId,
           provider_signature: demoOrder.providerSignature,
-          entitlement_type: 'course_access',
+          entitlement_type: 'all_courses_pass',
           metadata: demoOrder.metadata,
         });
 
@@ -666,7 +687,7 @@ export class PaymentService {
             id: entitlement.id,
             user_id: userId,
             course_id: course.id,
-            entitlement_type: 'course_access',
+            entitlement_type: 'all_courses_pass',
             status: 'active',
             order_id: demoOrderId,
             metadata: entitlement.metadata,
@@ -789,7 +810,7 @@ export async function checkUserCourseAccess(
   return {
     hasAccess: has,
     courseId,
-    entitlementType: has ? 'course_access' : undefined,
+    entitlementType: has ? 'all_courses_pass' : undefined,
   };
 }
 
@@ -800,7 +821,7 @@ export async function checkUserCoursePassEntitlement(
   const has = await PaymentService.hasCourseAccess(userId, courseId);
   return {
     hasEntitlement: has,
-    entitlementType: has ? 'course_access' : undefined,
+    entitlementType: has ? 'all_courses_pass' : undefined,
   };
 }
 

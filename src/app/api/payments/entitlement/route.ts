@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       courseId,
       price: PaymentService.COURSE_PRICE_INR,
       currency: '₹',
-      entitlementType: 'course_access',
+      entitlementType: 'all_courses_pass',
       gatewayConfigured: PaymentService.isGatewayConfigured(),
     });
   } catch (err: any) {

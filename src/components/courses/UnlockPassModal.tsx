@@ -199,7 +199,7 @@ export default function UnlockPassModal({
             </div>
             <h3 className="text-2xl font-black text-[#1C0D12]">Access Granted!</h3>
             <p className="text-sm text-[#6B4E56] max-w-sm mx-auto">
-              Your ₹100 enrollment for {courseTitle || 'this course'} is verified. You now have full access to this curriculum and practice environment.
+              Your ₹100 All-Courses Pass is verified. You now have full lifetime access to all courses, modules, and practice environments.
             </p>
           </div>
         ) : (
@@ -207,13 +207,13 @@ export default function UnlockPassModal({
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFE4E6] text-[#881337] text-xs font-bold rounded-full uppercase tracking-wider mb-2 border border-[#881337]/20">
                 <Sparkles className="w-3.5 h-3.5 text-[#CA8A04]" />
-                Individual Course Access
+                All-Courses Access Pass
               </div>
               <h2 className="text-2xl sm:text-3xl font-black text-[#1C0D12] tracking-tight">
-                Unlock {courseTitle || 'Your Course'}
+                Unlock All Courses
               </h2>
               <p className="text-sm text-[#6B4E56] mt-1.5 leading-relaxed">
-                One payment of ₹100 for lifetime access to this course.
+                One payment of ₹100 for lifetime access to all courses.
               </p>
             </div>
 
@@ -221,38 +221,38 @@ export default function UnlockPassModal({
             <div className="p-4 rounded-2xl bg-[#FFFDF7] border border-[#881337]/15 space-y-3">
               <div className="flex items-baseline justify-between border-b border-[#881337]/10 pb-3">
                 <span className="text-xs font-bold text-[#6B4E56] uppercase tracking-wider">
-                  Individual Enrollment
+                  Complete Platform Access
                 </span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-black text-[#881337]">₹100</span>
-                  <span className="text-xs text-[#6B4E56] font-semibold">INR per course</span>
+                  <span className="text-xs text-[#6B4E56] font-semibold">INR total</span>
                 </div>
               </div>
 
               <ul className="space-y-2 text-xs font-medium text-[#1C0D12]/90">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Full {courseTitle || 'curriculum'} access (145 lessons, 16 modules)</span>
+                  <span>Full access to all engineering courses (Full Stack, Cloud, AI, Security)</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Hands-on practice labs & code runner evaluations</span>
+                  <span>145+ structured lessons, interactive AI Tutor & hands-on code labs</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Capstone projects, skill assessments & verified evidence</span>
+                  <span>Production capstone projects & proctored skill assessments</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Each additional course requires a separate ₹100 purchase</span>
+                  <span>Cryptographically verified SEVA Skill Passport credentials</span>
                 </li>
               </ul>
             </div>
 
             {/* Honest Disclosure Note */}
             <p className="text-[11px] text-[#6B4E56] leading-relaxed bg-[#FFE4E6]/40 p-3 rounded-xl border border-[#881337]/10">
-              <span className="font-bold text-[#881337]">Course Pricing Policy: </span>
-              Every available course costs ₹100 individually. One ₹100 payment grants access to one specific course only. Additional courses require a separate ₹100 purchase.
+              <span className="font-bold text-[#881337]">Course Access Policy: </span>
+              One payment of ₹100 grants full access to all eligible courses. No hidden fees or recurring subscriptions.
             </p>
 
             {errorMessage && (

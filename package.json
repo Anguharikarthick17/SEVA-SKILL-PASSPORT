@@ -18,7 +18,9 @@
     "test:master": "npx -y esbuild scripts/test-master-theme-and-access.ts --bundle --platform=node | node",
     "test:onboarding": "npx -y esbuild scripts/test-phase13-onboarding-flow.ts --bundle --platform=node | node",
     "test:ultimate": "npx -y esbuild scripts/test-phase14-ultimate-master.ts --bundle --platform=node | node",
-    "test:branding": "npx -y esbuild scripts/test-branding-and-intro.ts --bundle --platform=node | node"
+    "test:branding": "npx -y esbuild scripts/test-branding-and-intro.ts --bundle --platform=node | node",
+    "test:ai": "npx -y esbuild scripts/test-ai-tutor.ts --bundle --platform=node | node",
+    "test:payment": "npx -y esbuild scripts/test-payment-sandbox.ts --bundle --platform=node | node"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

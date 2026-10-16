@@ -35,9 +35,9 @@ async function runUltimateMasterAudit() {
     }
   }
 
-  // --- SECTION 1: NON-NEGOTIABLE BUSINESS RULES & COURSE-SPECIFIC PRICING ---
-  console.log('--- SECTION 1: INDIVIDUAL ₹100 PRICING & NO ALL-COURSES PASS ---');
-  test('Rule 1: Price per course is exactly ₹100 INR', () => {
+  // --- SECTION 1: NON-NEGOTIABLE BUSINESS RULES & ₹100 ALL-COURSES PASS ---
+  console.log('--- SECTION 1: ₹100 PRICING RULE — ACCESS TO ALL COURSES ---');
+  test('Rule 1: Price is exactly ₹100 INR', () => {
     assert.equal(COURSE_PRICE_INR, 100);
   });
 
@@ -45,50 +45,40 @@ async function runUltimateMasterAudit() {
     assert.equal(COURSE_PRICE_PAISE, 10000);
   });
 
-  await testAsync('Rule 2 & 3: Course A purchase grants access ONLY to Course A, NOT Course B', async () => {
-    const userA = 'test-user-isolated-' + Date.now();
-    
-    // Purchase Course A (e.g. full-stack-development)
-    const grantA = await PaymentService.grantCourseEntitlement({
+  await testAsync('Rule 2 & 3: Intended pricing rule — ₹100 payment grants access to all courses', async () => {
+    const userA = 'test-user-allcourses-' + Date.now();
+
+    // Verify unpaid user starts with NO access
+    const initialAccess = await PaymentService.hasCourseAccess(userA, 'full-stack-development');
+    assert.equal(initialAccess, false, 'Unpaid user strictly does not have access');
+
+    // Purchase ₹100 pass
+    const grantRes = await PaymentService.grantCourseEntitlement({
       userId: userA,
       courseId: 'full-stack-development',
-      orderId: 'order_iso_001',
-      paymentId: 'pay_iso_001',
+      orderId: 'order_all_001',
+      paymentId: 'pay_all_001',
       amount: COURSE_PRICE_PAISE,
     });
-    assert.equal(grantA.success, true);
+    assert.equal(grantRes.success, true);
 
-    // Verify Course A is unlocked
+    // Verify user now has access to full-stack-development
     const hasAccessA = await PaymentService.hasCourseAccess(userA, 'full-stack-development');
-    assert.equal(hasAccessA, true, 'User has access to purchased course A');
+    assert.equal(hasAccessA, true, 'User has access to full-stack-development');
 
-    // Verify Course B is STRICTLY LOCKED
+    // Verify user ALSO has access to all other courses under ₹100 pass rule
     const hasAccessB = await PaymentService.hasCourseAccess(userA, 'cloud-devops');
-    assert.equal(hasAccessB, false, 'User STRICTLY does NOT have access to unpurchased course B');
+    assert.equal(hasAccessB, true, 'User has access to cloud-devops under ₹100 all-courses pass');
 
-    // Verify user purchasing Course B gets Course B, while Course A progress remains intact
-    const grantB = await PaymentService.grantCourseEntitlement({
-      userId: userA,
-      courseId: 'cloud-devops',
-      orderId: 'order_iso_002',
-      paymentId: 'pay_iso_002',
-      amount: COURSE_PRICE_PAISE,
-    });
-    assert.equal(grantB.success, true);
-
-    const hasAccessBothA = await PaymentService.hasCourseAccess(userA, 'full-stack-development');
-    const hasAccessBothB = await PaymentService.hasCourseAccess(userA, 'cloud-devops');
-    assert.equal(hasAccessBothA, true, 'Course A remains unlocked after purchasing Course B');
-    assert.equal(hasAccessBothB, true, 'Course B is now unlocked after separate purchase');
+    const hasAccessC = await PaymentService.hasCourseAccess(userA, 'data-ai');
+    assert.equal(hasAccessC, true, 'User has access to data-ai under ₹100 all-courses pass');
   });
 
-  test('Rule 4: Zero occurrences of "All-Courses Pass" offering in marketing cards', () => {
-    const affordabilityCard = fs.readFileSync(
-      path.join(process.cwd(), 'src/components/home/AffordabilityCard.tsx'),
-      'utf8'
-    );
-    assert.equal(affordabilityCard.includes('total one-time pass'), false);
-    assert.equal(affordabilityCard.includes('Unlock All Courses'), false);
+  test('Rule 4: Pricing consistency across constants', () => {
+    assert.equal(PaymentService.COURSE_PRICE_INR, 100);
+    assert.equal(PaymentService.COURSE_PASS_PRICE_INR, 100);
+    assert.equal(PaymentService.COURSE_PRICE_PAISE, 10000);
+    assert.equal(PaymentService.COURSE_PASS_PRICE_PAISE, 10000);
   });
 
   // --- SECTION 2: DEMO MODE BEHAVIOR ---

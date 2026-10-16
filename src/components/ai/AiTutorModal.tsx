@@ -105,6 +105,17 @@ export default function AiTutorModal({
         return;
       }
 
+      if (!data.success && data.error === 'INVALID_API_CREDENTIALS') {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: `⚠️ **AI Provider Authentication Error**:\n${data.message}`
+          }
+        ]);
+        return;
+      }
+
       if (data.success && data.message) {
         setMessages((prev) => [
           ...prev,

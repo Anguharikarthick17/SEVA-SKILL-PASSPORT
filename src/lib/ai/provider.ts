@@ -365,7 +365,7 @@ ${curriculumGrounding}`;
         error: 'MISSING_API_CREDENTIALS',
         statusCode: 200,
         configInstructions:
-          '1. Obtain a Gemini API key from https://aistudio.google.com/app/apikey\n2. Add GEMINI_API_KEY="your-key-here" to seva-skill-passport/.env.local\n3. Restart the application server.'
+          '1. Obtain a Gemini API key from https://aistudio.google.com/app/apikey\n2. In Vercel, go to Project Settings -> Environment Variables\n3. Add GEMINI_API_KEY and redeploy the deployment.'
       };
     }
 
@@ -422,16 +422,22 @@ ${curriculumGrounding}`;
     userPrompt: string,
     history: AiChatMessage[]
   ): Promise<AiTutorResponse> {
-    const configuredPrimary = (process.env.GEMINI_MODEL || 'gemini-3.8-flash').replace(/^models\//, '');
-    const configuredFallback = (process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.5-flash').replace(/^models\//, '');
+    const configuredPrimary = (process.env.GEMINI_MODEL || 'gemini-3.5-flash').replace(/^models\//, '');
+    const configuredFallback = (process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.5-flash-lite').replace(/^models\//, '');
 
-    // Model fallback chain: primary (3.8-flash) -> verified fast fallback (3.5-flash) -> lightweight fallback (2.5-flash-lite)
+    // Model fallback chain: primary (3.5-flash) -> verified fast fallback (3.5-flash-lite) -> lightweight preview (3.1-flash-lite) -> latest (3.8-flash)
     const modelsToTry: string[] = [configuredPrimary];
     if (configuredFallback !== configuredPrimary) {
       modelsToTry.push(configuredFallback);
     }
-    if (!modelsToTry.includes('gemini-2.5-flash-lite')) {
-      modelsToTry.push('gemini-2.5-flash-lite');
+    if (!modelsToTry.includes('gemini-3.5-flash-lite')) {
+      modelsToTry.push('gemini-3.5-flash-lite');
+    }
+    if (!modelsToTry.includes('gemini-3.1-flash-lite')) {
+      modelsToTry.push('gemini-3.1-flash-lite');
+    }
+    if (!modelsToTry.includes('gemini-3.8-flash')) {
+      modelsToTry.push('gemini-3.8-flash');
     }
 
     const contents: any[] = [];
@@ -521,12 +527,18 @@ ${curriculumGrounding}`;
 
           // Non-retryable 4xx client errors (bad request, invalid auth, forbidden)
           if (response.status >= 400 && response.status < 500 && response.status !== 429 && response.status !== 404) {
-            console.error(`[GEMINI_API_ERROR] model=${model} status=${response.status} error="${parsedMessage}" (non-retryable client error)`);
+            const isAuthError =
+              response.status === 401 ||
+              response.status === 403 ||
+              (response.status === 400 && /api[ _-]?key|invalid|credential/i.test(parsedMessage));
+            console.error(`[GEMINI_API_ERROR] model=${model} status=${response.status} authError=${isAuthError} (non-retryable client error)`);
             return {
               success: false,
-              message: `AI Provider authentication or request error: ${parsedMessage}`,
+              message: isAuthError
+                ? 'AI Provider authentication failed: The configured GEMINI_API_KEY is invalid or unauthorized.'
+                : 'AI Provider request error: The model could not process this request format.',
               model,
-              error: 'CLIENT_REQUEST_ERROR',
+              error: isAuthError ? 'INVALID_API_CREDENTIALS' : 'CLIENT_REQUEST_ERROR',
               statusCode: response.status
             };
           }
@@ -576,12 +588,15 @@ ${curriculumGrounding}`;
     }
 
     console.error(`[GEMINI_API_EXHAUSTED] All candidate models exhausted. Last model=${lastAttemptedModel} status=${lastStatusCode} error="${lastErrorMessage}"`);
+    const isRateLimited = lastStatusCode === 429;
     return {
       success: false,
-      message: 'The AI Tutor is currently experiencing high demand. Please try asking again in a few moments.',
+      message: isRateLimited
+        ? 'AI Provider rate limit reached. Please wait a moment before sending another query.'
+        : 'The AI Tutor is currently experiencing high demand. Please try asking again in a few moments.',
       model: lastAttemptedModel,
-      error: 'PROVIDER_TEMPORARILY_UNAVAILABLE',
-      statusCode: lastStatusCode >= 500 || lastStatusCode === 429 ? 503 : lastStatusCode
+      error: isRateLimited ? 'RATE_LIMIT_EXCEEDED' : 'PROVIDER_TEMPORARILY_UNAVAILABLE',
+      statusCode: isRateLimited ? 429 : 503
     };
   }
 
