@@ -62,13 +62,13 @@ export default function AffordabilityCard() {
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-black text-[#1C0D12]">Affordable Individual Learning</h3>
-                  <p className="text-xs text-[#6B4E56] mt-1">₹100 per course. Pay only for the specific curriculum you choose.</p>
+                  <h3 className="text-xl font-black text-[#1C0D12]">Affordable Platform Access</h3>
+                  <p className="text-xs text-[#6B4E56] mt-1">One payment of ₹100 for access to all eligible courses.</p>
                 </div>
 
                 <div className="flex items-baseline gap-2 py-2 border-y border-[#881337]/10">
                   <span className="text-4xl sm:text-5xl font-black text-[#881337] leading-none">₹100</span>
-                  <span className="text-xs text-[#6B4E56] font-semibold">INR per course</span>
+                  <span className="text-xs text-[#6B4E56] font-semibold">INR total</span>
                 </div>
 
                 <p className="text-xs text-[#6B4E56] leading-relaxed">
@@ -82,7 +82,7 @@ export default function AffordabilityCard() {
                     size="md"
                     className="w-full justify-center"
                   >
-                    <span>Browse Courses — ₹100 each</span>
+                    <span>Unlock All Courses — ₹100</span>
                     <ArrowRight className="w-4 h-4 ml-1" />
                   </GlowButton>
                 </div>
