@@ -23,6 +23,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { FULL_STACK_MODULES, DetailedLesson } from '@/data';
+import { PaymentService } from '@/lib/payments/service';
 import VideoLessonPlayer from '@/components/video/VideoLessonPlayer';
 import AiTutorModal from '@/components/ai/AiTutorModal';
 import UnlockPassModal from '@/components/courses/UnlockPassModal';
@@ -75,6 +76,14 @@ export default function LearningPage() {
         const completed = await DataService.getCompletedLessonIds(u.id);
         setCompletedLessonIds(completed);
 
+        // 1. Check client-side persistent storage immediately (instant, zero-delay unlock)
+        const localEnrollment = await DataService.getUserEnrollment(u.id, 'full-stack-development');
+        const localHasAccess = await PaymentService.hasCourseAccess(u.id, 'full-stack-development');
+        if (localHasAccess || (localEnrollment && localEnrollment.status === 'active')) {
+          setHasPass(true);
+        }
+
+        // 2. Query server entitlement endpoint for server synchronization
         try {
           const res = await fetch(`/api/payments/entitlement?userId=${encodeURIComponent(u.id)}&courseId=full-stack-development`);
           if (res.ok) {
@@ -84,7 +93,7 @@ export default function LearningPage() {
             }
           }
         } catch {
-          // Keep default preview state on network error
+          // Keep existing local state on network error
         }
       }
     });

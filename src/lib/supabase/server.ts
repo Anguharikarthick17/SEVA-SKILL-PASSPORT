@@ -8,7 +8,9 @@ export const isServerSupabaseConfigured = Boolean(
   supabaseUrl &&
   supabaseServiceRoleKey &&
   supabaseUrl.startsWith('http') &&
-  !supabaseUrl.includes('your-project-id')
+  !supabaseUrl.includes('your-project-id') &&
+  !supabaseServiceRoleKey.includes('your-service-role') &&
+  !supabaseServiceRoleKey.includes('placeholder')
 );
 
 let mockAdminClient: any = null;

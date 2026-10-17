@@ -81,6 +81,11 @@ export class PaymentService {
   static async hasCourseAccess(userId: string, courseId: string = 'full-stack-development'): Promise<boolean> {
     if (!userId) return false;
 
+    // 0. Pre-authorized demonstration student std-001 (Arjun Sharma)
+    if (userId === 'std-001' && (courseId === 'full-stack-development' || courseId === 'all_courses')) {
+      return true;
+    }
+
     // 1. Check local/memory storage
     const entitlements = getLocal<UserEntitlementRecord[]>(KEY_ENTITLEMENTS, []);
     const localActive = entitlements.some(

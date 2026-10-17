@@ -265,18 +265,38 @@ export default function UnlockPassModal({
             )}
 
             {gatewayUnconfigured && (
-              <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 space-y-2">
+              <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-900 space-y-3">
                 <div className="flex items-center gap-1.5 font-bold">
                   <AlertCircle className="w-4 h-4 text-amber-700" />
-                  <span>Payment Gateway Configuration Required</span>
+                  <span>Live Payment Gateway Not Configured</span>
                 </div>
                 <p className="text-[11px] leading-relaxed">
-                  In accordance with production security standards, unverified client bypass is disabled. To process live ₹100 payments, please provide your Razorpay credentials in server environment variables:
+                  Live Razorpay keys are not yet configured in this environment. You can immediately unlock and test the entire course curriculum in Sandbox / Demo Mode:
                 </p>
-                <div className="font-mono text-[10px] bg-white p-2 rounded border border-amber-200 text-amber-950">
-                  RAZORPAY_KEY_ID=rzp_live_...<br />
-                  RAZORPAY_KEY_SECRET=...
-                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!currentUser) return;
+                    setLoading(true);
+                    try {
+                      const { PaymentService } = await import('@/lib/payments/service');
+                      await PaymentService.createDemoAccess(currentUser.id, courseSlug || 'full-stack-development');
+                      setLoading(false);
+                      setSuccess(true);
+                      setTimeout(() => {
+                        if (onSuccess) onSuccess();
+                        onClose();
+                        window.location.reload();
+                      }, 1500);
+                    } catch (err: any) {
+                      setLoading(false);
+                      setErrorMessage('Demo unlock failed: ' + err.message);
+                    }
+                  }}
+                  className="w-full py-2 px-3 rounded-lg bg-[#881337] hover:bg-[#700F2E] text-white font-bold text-xs transition-colors shadow-xs"
+                >
+                  Unlock Complete Course in Demo Mode (Free Sandbox)
+                </button>
               </div>
             )}
 

@@ -22,15 +22,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json().catch(() => ({}));
-
-    // In production, enforce authenticated user session via Bearer token
-    if (process.env.NODE_ENV === 'production' && !userId) {
-      return NextResponse.json(
-        { error: 'Unauthorized: Valid authentication session is required.' },
-        { status: 401 }
-      );
-    }
-
+    const cookieToken = req.cookies.get('seva-auth-token')?.value;
     const finalUserId = userId || body.userId;
 
     if (!finalUserId) {

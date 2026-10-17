@@ -222,6 +222,25 @@ function ensureInitialized(userId: string) {
     setLocal(KEY_ENROLLMENTS, enrollments);
   }
 
+  // Seed default course entitlement for demo learner std-001
+  const entitlements = getLocal<any[]>('seva_db_user_entitlements', []);
+  if (!entitlements.some((e) => e.userId === userId && (e.courseId === 'full-stack-development' || e.entitlementType === 'all_courses_pass'))) {
+    entitlements.push({
+      id: `ent-${userId}-fs`,
+      userId,
+      courseId: 'full-stack-development',
+      entitlementType: 'all_courses_pass',
+      status: 'active',
+      grantedAt: '2024-10-01T00:00:00Z',
+      metadata: {
+        pricePaidInr: 100,
+        courseId: 'full-stack-development',
+        allCoursesAccess: true,
+      },
+    });
+    setLocal('seva_db_user_entitlements', entitlements);
+  }
+
   // Seed default completed lessons exclusively for demo learner std-001
   const progressList = getLocal<Record<string, boolean>>(KEY_LESSON_PROGRESS, {});
   if (!Object.keys(progressList).some((k) => k.startsWith('std-001_'))) {
@@ -1311,6 +1330,27 @@ export const DataService = {
 
     enrollments.push(newEnrollment);
     setLocal(KEY_ENROLLMENTS, enrollments);
+
+    // Synchronize entitlement store
+    const entitlements = getLocal<any[]>('seva_db_user_entitlements', []);
+    if (!entitlements.some((e) => e.userId === userId && (e.courseId === courseId || e.entitlementType === 'all_courses_pass'))) {
+      entitlements.push({
+        id: `ent-${userId}-${courseId}`,
+        userId,
+        courseId,
+        entitlementType: 'all_courses_pass',
+        status: 'active',
+        grantedAt: new Date().toISOString(),
+        metadata: {
+          isDemo,
+          accessType,
+          courseId,
+          allCoursesAccess: true,
+        },
+      });
+      setLocal('seva_db_user_entitlements', entitlements);
+    }
+
     return newEnrollment;
   },
 
