@@ -123,15 +123,15 @@ export default function CourseDetailPage() {
             {/* Price Card */}
             <div className="bg-white text-[#1C0D12] p-6 rounded-2xl shadow-xl border border-[#881337]/15">
               <div className="text-center pb-4 border-b border-[#881337]/10">
-                <span className="text-xs uppercase tracking-wider text-[#6B4E56] font-bold">All-Inclusive Pass</span>
+                <span className="text-xs uppercase tracking-wider text-[#6B4E56] font-bold">Full Stack Developer Programme</span>
                 <div className="text-4xl font-black text-[#881337] mt-1">₹100</div>
-                <span className="text-xs text-[#6B4E56] font-medium">One-time payment for all eligible courses</span>
+                <span className="text-xs text-[#6B4E56] font-medium">One-time payment. Unlock the complete Full Stack Developer course.</span>
               </div>
 
               <div className="mt-4 space-y-2 text-xs font-medium text-[#1C0D12]">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Full Stack track available immediately</span>
+                  <span>Full access to all 12 modules &amp; 111 lessons</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
@@ -143,7 +143,7 @@ export default function CourseDetailPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Automatic unlock for upcoming courses</span>
+                  <span>One-time ₹100 payment unlocks the entire course</span>
                 </div>
               </div>
 
@@ -154,7 +154,7 @@ export default function CourseDetailPage() {
                   </GlowButton>
                 ) : (
                   <GlowButton onClick={handleEnrollClick} variant="primary" size="md" className="w-full">
-                    Unlock All Courses — ₹100 <ArrowRight className="w-4 h-4 ml-1" />
+                    Unlock Full Stack Course — ₹100 <ArrowRight className="w-4 h-4 ml-1" />
                   </GlowButton>
                 )}
               </div>

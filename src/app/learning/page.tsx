@@ -295,15 +295,15 @@ export default function LearningPage() {
               </span>
             </div>
 
-            {/* Access Pass Banner */}
+            {/* Course Access Banner */}
             {hasPass ? (
               <div className="mb-3 p-2.5 rounded-xl bg-[#FFE4E6]/50 border border-[#FECDD3] flex items-center justify-between text-xs">
                 <span className="font-bold text-[#881337] flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  All Courses Unlocked
+                  Full Stack Developer Course — Unlocked
                 </span>
-                <span className="text-[10px] font-bold text-[#CA8A04] bg-white px-2 py-0.5 rounded-full border border-[#FECDD3]">
-                  Pass Active
+                <span className="text-[10px] font-bold text-emerald-700 bg-white px-2 py-0.5 rounded-full border border-emerald-200">
+                  Active
                 </span>
               </div>
             ) : (
@@ -311,20 +311,20 @@ export default function LearningPage() {
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-[#881337] flex items-center gap-1">
                     <Lock className="w-3.5 h-3.5 text-[#881337]" />
-                    Full Access: ₹100
+                    Full Stack Developer Programme — ₹100
                   </span>
-                  <span className="text-[10px] font-bold text-[#CA8A04] bg-white px-1.5 py-0.5 rounded border border-[#FECDD3]">
-                    All Courses
+                  <span className="text-[10px] font-bold text-[#881337] bg-white px-1.5 py-0.5 rounded border border-[#FECDD3]">
+                    Full Course
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-600 leading-tight">
-                  Previewing Lesson 1 free. Unlock all 111 lessons, AI tutor, and practical labs.
+                  One-time payment. Unlock the complete Full Stack Developer course.
                 </p>
                 <button
                   onClick={() => setIsPassModalOpen(true)}
                   className="w-full py-1.5 px-3 rounded-lg bg-[#881337] hover:bg-[#700F2E] text-white text-[11px] font-bold transition-all shadow-xs text-center"
                 >
-                  Unlock All Courses — ₹100
+                  Unlock Full Stack Course — ₹100
                 </button>
               </div>
             )}
@@ -390,7 +390,7 @@ export default function LearningPage() {
                               )}
                               <span className="truncate flex-1">{lesson.title}</span>
                               <span className={`text-[10px] ${isCurrent ? 'text-red-100' : 'text-slate-400'}`}>
-                                {isLocked ? '₹100' : lesson.duration}
+                                {lesson.duration}
                               </span>
                             </button>
                           );
@@ -462,14 +462,14 @@ export default function LearningPage() {
               <div className="max-w-md mx-auto space-y-2">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFE4E6] text-[#881337] text-xs font-bold border border-[#FECDD3]">
                   <Sparkles className="w-3 h-3 text-[#CA8A04]" />
-                  <span>PREMIUM LEARNING PATHWAY</span>
+                  <span>FULL STACK DEVELOPER PROGRAMME</span>
                 </div>
-                <h2 className="text-2xl font-black text-[#1C0D12]">Unlock Your Learning Journey</h2>
+                <h2 className="text-2xl font-black text-[#1C0D12]">Full Stack Developer Programme — ₹100</h2>
                 <p className="text-sm font-semibold text-[#881337]">
-                  One payment of ₹100 for access to all eligible courses.
+                  This lesson is included in the Full Stack Developer course. Unlock the complete course for ₹100.
                 </p>
                 <p className="text-xs text-slate-500">
-                  Learn at your own pace. Practise your skills. Build real project evidence.
+                  One-time payment. Unlock the complete Full Stack Developer course.
                 </p>
               </div>
 
@@ -484,7 +484,7 @@ export default function LearningPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-[#881337] flex-shrink-0" />
-                  <span>All upcoming engineering tracks included upon release</span>
+                  <span>One-time ₹100 payment unlocks the entire course</span>
                 </div>
               </div>
 
@@ -493,7 +493,7 @@ export default function LearningPage() {
                   onClick={() => setIsPassModalOpen(true)}
                   className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#881337] hover:bg-[#700F2E] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
                 >
-                  <span>Unlock All Courses — ₹100</span>
+                  <span>Unlock Full Stack Course — ₹100</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
@@ -876,7 +876,7 @@ export default function LearningPage() {
         currentUser={user}
         onSuccess={() => {
           setHasPass(true);
-          setToastMessage('Payment verified! All courses and lessons unlocked successfully.');
+          setToastMessage('Payment verified! Full Stack Developer course unlocked successfully.');
           setShowCompletionSuccess(true);
           setTimeout(() => setShowCompletionSuccess(false), 5000);
         }}

@@ -248,11 +248,11 @@ export default function ChooseCoursePage() {
         <div className="mt-12 max-w-xl mx-auto text-center bg-white rounded-2xl p-6 border border-[#881337]/15 shadow-xl">
           <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#881337] mb-2">
             <ShieldCheck className="w-4 h-4 text-[#CA8A04]" />
-            Individual Course Access at ₹100
+            Course Access — ₹100
           </div>
           <p className="text-xs text-[#1C0D12]/70 mb-4">
             {selectedCourseId
-              ? `You selected ${COURSES.find((c) => c.id === selectedCourseId)?.title}. Each available course is ₹100 individually.`
+              ? `You selected ${COURSES.find((c) => c.id === selectedCourseId)?.title}. One-time payment of ₹100 unlocks the complete course.`
               : 'Please choose an available course above to continue to student onboarding.'}
           </p>
           <button

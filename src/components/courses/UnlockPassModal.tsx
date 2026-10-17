@@ -117,7 +117,7 @@ export default function UnlockPassModal({
           amount: data.amount, // 10000 paise
           currency: data.currency,
           name: 'SEVA Skill Passport',
-          description: 'One-time ₹100 pass for all eligible courses',
+          description: courseTitle ? `One-time ₹100 pass for ${courseTitle}` : 'One-time ₹100 course unlock',
           order_id: data.orderId,
           prefill: {
             name: currentUser.fullName,
@@ -197,9 +197,11 @@ export default function UnlockPassModal({
             <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
               <CheckCircle2 className="w-8 h-8" />
             </div>
-            <h3 className="text-2xl font-black text-[#1C0D12]">Access Granted!</h3>
+            <h3 className="text-2xl font-black text-[#1C0D12]">
+              {courseTitle ? `${courseTitle} — Unlocked` : 'Full Stack Developer Course — Unlocked'}
+            </h3>
             <p className="text-sm text-[#6B4E56] max-w-sm mx-auto">
-              Your ₹100 All-Courses Pass is verified. You now have full lifetime access to all courses, modules, and practice environments.
+              Your ₹100 course entitlement is verified. You now have full lifetime access to all course modules, lessons, and practice environments.
             </p>
           </div>
         ) : (
@@ -207,13 +209,13 @@ export default function UnlockPassModal({
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FFE4E6] text-[#881337] text-xs font-bold rounded-full uppercase tracking-wider mb-2 border border-[#881337]/20">
                 <Sparkles className="w-3.5 h-3.5 text-[#CA8A04]" />
-                All-Courses Access Pass
+                {courseTitle || 'Full Stack Developer Programme'}
               </div>
               <h2 className="text-2xl sm:text-3xl font-black text-[#1C0D12] tracking-tight">
-                Unlock All Courses
+                {courseTitle ? `Unlock ${courseTitle}` : 'Unlock Full Stack Course'}
               </h2>
               <p className="text-sm text-[#6B4E56] mt-1.5 leading-relaxed">
-                One payment of ₹100 for lifetime access to all courses.
+                One-time payment. Unlock the complete {courseTitle || 'Full Stack Developer course'}.
               </p>
             </div>
 
@@ -221,7 +223,7 @@ export default function UnlockPassModal({
             <div className="p-4 rounded-2xl bg-[#FFFDF7] border border-[#881337]/15 space-y-3">
               <div className="flex items-baseline justify-between border-b border-[#881337]/10 pb-3">
                 <span className="text-xs font-bold text-[#6B4E56] uppercase tracking-wider">
-                  Complete Platform Access
+                  {courseTitle || 'Full Stack Developer Programme'}
                 </span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-black text-[#881337]">₹100</span>
@@ -232,15 +234,15 @@ export default function UnlockPassModal({
               <ul className="space-y-2 text-xs font-medium text-[#1C0D12]/90">
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Full access to all engineering courses (Full Stack, Cloud, AI, Security)</span>
+                  <span>Full access to all 12 modules &amp; 111 lessons</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>145+ structured lessons, interactive AI Tutor & hands-on code labs</span>
+                  <span>Interactive sandbox &amp; real Node.js execution runtime</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <span>Production capstone projects & proctored skill assessments</span>
+                  <span>Production capstone projects &amp; proctored skill assessments</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
@@ -252,7 +254,7 @@ export default function UnlockPassModal({
             {/* Honest Disclosure Note */}
             <p className="text-[11px] text-[#6B4E56] leading-relaxed bg-[#FFE4E6]/40 p-3 rounded-xl border border-[#881337]/10">
               <span className="font-bold text-[#881337]">Course Access Policy: </span>
-              One payment of ₹100 grants full access to all eligible courses. No hidden fees or recurring subscriptions.
+              One-time payment of ₹100 unlocks the complete course. No per-lesson charges, hidden fees, or recurring subscriptions.
             </p>
 
             {errorMessage && (
@@ -287,7 +289,11 @@ export default function UnlockPassModal({
                 size="md"
                 className="w-full flex-1"
               >
-                {loading ? 'Processing Order...' : 'Unlock All Courses — ₹100'}
+                {loading
+                  ? 'Processing Order...'
+                  : courseSlug === 'full-stack-development' || courseTitle?.includes('Full Stack')
+                  ? 'Unlock Full Stack Course — ₹100'
+                  : `Unlock ${courseTitle || 'Course'} — ₹100`}
                 {!loading && <ArrowRight className="w-4 h-4 ml-1" />}
               </GlowButton>
 

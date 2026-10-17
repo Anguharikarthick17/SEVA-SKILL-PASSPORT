@@ -133,7 +133,7 @@ function ConfirmationContent() {
             <div className="flex items-center justify-between pb-3 border-b border-[#881337]/10">
               <span className="text-xs font-semibold text-[#1C0D12]/70">Access Tier</span>
               <span className="text-xs font-bold text-[#881337] bg-[#FFE4E6] px-2.5 py-1 rounded-md">
-                Individual Course Access (₹100 Value)
+                Full Course Access (₹100)
               </span>
             </div>
 
