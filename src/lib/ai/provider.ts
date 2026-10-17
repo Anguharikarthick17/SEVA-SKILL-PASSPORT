@@ -357,6 +357,28 @@ ${curriculumGrounding}`;
     const openaiKey = process.env.OPENAI_API_KEY;
 
     if (!geminiKey && !openaiKey) {
+      // Cross-deployment resilience: If running in production on a secondary deployment without local key (e.g. sevaskillpassport),
+      // bridge query to the active production learning app instance (skillpassport17)
+      if (process.env.NODE_ENV === 'production') {
+        const upstreamUrl = process.env.AI_UPSTREAM_URL || 'https://skillpassport17.vercel.app/api/ai/tutor';
+        try {
+          const upstreamRes = await fetch(upstreamUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(req),
+            signal: AbortSignal.timeout(18000)
+          });
+          if (upstreamRes.ok) {
+            const upstreamData = await upstreamRes.json();
+            if (upstreamData && upstreamData.success) {
+              return upstreamData;
+            }
+          }
+        } catch (proxyErr: any) {
+          console.warn('[AI_TUTOR_PROXY_WARN] Upstream bridge attempt failed:', proxyErr.message);
+        }
+      }
+
       return {
         success: false,
         message:
@@ -425,13 +447,19 @@ ${curriculumGrounding}`;
     const configuredPrimary = (process.env.GEMINI_MODEL || 'gemini-3.5-flash').replace(/^models\//, '');
     const configuredFallback = (process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.5-flash-lite').replace(/^models\//, '');
 
-    // Model fallback chain: primary (3.5-flash) -> verified fast fallback (3.5-flash-lite) -> lightweight preview (3.1-flash-lite) -> latest (3.8-flash)
+    // Model fallback chain: primary (3.5-flash) -> verified fast fallback (3.5-flash-lite) -> canonical dynamic aliases -> latest preview
     const modelsToTry: string[] = [configuredPrimary];
     if (configuredFallback !== configuredPrimary) {
       modelsToTry.push(configuredFallback);
     }
     if (!modelsToTry.includes('gemini-3.5-flash-lite')) {
       modelsToTry.push('gemini-3.5-flash-lite');
+    }
+    if (!modelsToTry.includes('gemini-flash-latest')) {
+      modelsToTry.push('gemini-flash-latest');
+    }
+    if (!modelsToTry.includes('gemini-flash-lite-latest')) {
+      modelsToTry.push('gemini-flash-lite-latest');
     }
     if (!modelsToTry.includes('gemini-3.1-flash-lite')) {
       modelsToTry.push('gemini-3.1-flash-lite');
